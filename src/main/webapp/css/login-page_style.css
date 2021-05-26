@@ -1,0 +1,166 @@
+.login-section {
+    display: block;
+    flex: 0 0 600px;
+    position: relative;
+    top: 81px;
+    height: 380px;
+    border: 2px solid rgba(255, 255, 255, .5);
+    background-color: rgba(70, 70, 70, 0.5);
+    border-radius: 16px;
+    box-shadow: inset 0 0 16px rgba(0, 0, 0, .1);
+    padding: 40px;
+}
+
+.login-section__text {
+    font-size: 35px;
+    font-weight: 600;
+    text-align: center;
+    color: #fff;
+}
+
+.login-section form {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.login-section form input {
+    display: block;
+}
+
+.form_submit {
+    width: 338px;
+    height: 40px;
+    border: 2px solid rgba(255, 255, 255, .5);
+    border-radius: 8px;
+    background-color: transparent;
+    color: #fff;
+    transition: all .2s;
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.form_submit:hover {
+    border-color: #d600ea;
+    background-color: #d600ea;
+}
+
+.input_holder {
+    height: 95px;
+    color: #fff;
+    font-size: 20px;
+}
+
+.input_holder > label {
+    position: relative;
+    top: -40px;
+}
+
+.input_holder > input {
+    position: relative;
+    top: 36px;
+}
+
+.input_holder label i {
+    padding: 8px 6px;
+}
+
+.signup-link {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 50px;
+    width: 338px;
+    color: rgba(255, 255, 255, .8);
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.signup-link a {
+    padding: 0 8px;
+    color: #56d8e4;
+}
+
+.input-data {
+    background-color: #fff;
+    border: 2px solid rgba(255, 255, 255, .5);
+    border-radius: 4px;
+    width: 336px;
+    height: 40px;
+    padding: 0 10px;
+    font-size: 20px;
+    color: rgba(0, 0, 0, .8);
+}
+
+.error-input {
+    border: 2px solid rgba(255, 74, 74, 0.9);
+}
+
+.error-label {
+    color: rgba(255, 74, 74, 0.9);
+}
+
+.error-description {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 100%;
+    color: rgb(255, 55, 55);
+    font-size: 18px;
+    font-weight: 500;
+    padding: 0 8px;
+    border: 2px solid rgba(255, 74, 74, 0.9);
+    border-radius: 4px;
+    background-color: rgba(255, 74, 74, 0.2);
+}
+
+#login-input:invalid {
+    border: 2px solid rgba(255, 74, 74, 0.9);
+}
+
+#login-input:invalid + label {
+    color: rgba(255, 74, 74, 0.9);
+}
+
+#password-input:invalid {
+    border: 2px solid rgba(255, 74, 74, 0.9);
+}
+
+#password-input:invalid + label {
+    color: rgba(255, 74, 74, 0.9);
+}
+
+#repeat_password-input:invalid {
+    border: 2px solid rgba(255, 74, 74, 0.9);
+}
+
+#repeat_password-input:invalid + label {
+    color: rgba(255, 74, 74, 0.9);
+}
+
+#email-input:invalid {
+    border: 2px solid rgba(255, 74, 74, 0.9);
+}
+
+#email-input:invalid + label {
+    color: rgba(255, 74, 74, 0.9);
+}
+
+#name-input:invalid {
+    border: 2px solid rgba(255, 74, 74, 0.9);
+}
+
+#name-input:invalid + label {
+    color: rgba(255, 74, 74, 0.9);
+}
+
+#surname-input:invalid {
+    border: 2px solid rgba(255, 74, 74, 0.9);
+}
+
+#surname-input:invalid + label {
+    color: rgba(255, 74, 74, 0.9);
+}

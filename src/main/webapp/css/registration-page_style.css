@@ -1,0 +1,50 @@
+.register-section {
+	display: block;
+	flex: 0 0 760px;
+	position: relative;
+	top: 81px;
+	height: 480px;
+	border: 2px solid rgba(255, 255, 255, .5);
+	background-color: rgba(70, 70, 70, 0.5);
+	border-radius: 16px;
+	box-shadow: inset 0 0 16px rgba(0, 0, 0, .1);
+	padding: 40px;
+}
+
+.register-section form {
+	display: flex;
+	margin-top: 20px;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.input-container {	
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	width: 320px;
+	margin: 10px 20px;
+}
+
+
+.lwi {
+	display: inline-block;
+	height: 24px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	padding-left: 6px;
+}
+
+.div-container {
+	display: flex;
+	flex: 1 0 0;
+	flex-direction: row;
+}
+
+.register-section__decoration {
+	border-left: 1px solid rgba(255, 255, 255, .5);
+	margin: 10px 20px;
+	left: 50%;
+}

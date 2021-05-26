@@ -1,0 +1,23 @@
+body, html {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	font-family: 'Raleway', sans-serif;
+	background-color: #eeeff0;
+}
+
+body {
+	background: linear-gradient(115deg, #56d8e4 10%, #d600ea 90%);
+}
+
+.main-holder {
+	position: relative;
+	display: flex;
+	width: 100%;
+}
+
+.empty-place {
+	display: flex;
+	flex: 1 0 0;
+	min-width: 10px;
+}
