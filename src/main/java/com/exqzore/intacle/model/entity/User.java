@@ -2,16 +2,17 @@ package com.exqzore.intacle.model.entity;
 
 public class User {
     private static final String DEFAULT_AVATAR_PATH = "default_avatar.png";
+    private static final String DEFAULT_USER_LEVEL = "user";
 
     private long id;
     private String login;
     private String name;
     private String surname;
     private String email;
-    private String avatarPath;
     private String password;
-    private String level = "user";
     private String activationCode;
+    private String level = DEFAULT_USER_LEVEL;
+    private String avatarPath = DEFAULT_AVATAR_PATH;
 
     public User() {
     }
@@ -27,7 +28,6 @@ public class User {
         this.surname = surname;
         this.email = email;
         this.activationCode = activationCode;
-        this.avatarPath = DEFAULT_AVATAR_PATH;
     }
 
     public User(long id, String login, String name, String surname, String email, String activationCode, String avatarPath) {

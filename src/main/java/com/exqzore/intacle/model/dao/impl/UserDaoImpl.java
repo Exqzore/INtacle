@@ -19,7 +19,7 @@ public class UserDaoImpl implements UserDao {
 
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
-    private final static UserDaoImpl instance = new UserDaoImpl();
+    private final static UserDao instance = new UserDaoImpl();
 
     private static final String USER_REGISTRATION = """
             INSERT INTO users (login, email, password, name, surname, user_level, activation_code) VALUES (?,?,?,?,?,?,?)
@@ -39,7 +39,7 @@ public class UserDaoImpl implements UserDao {
     private UserDaoImpl() {
     }
 
-    public static UserDaoImpl getInstance() {
+    public static UserDao getInstance() {
         return instance;
     }
 
