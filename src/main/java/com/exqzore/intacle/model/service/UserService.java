@@ -1,14 +1,14 @@
 package com.exqzore.intacle.model.service;
 
 import com.exqzore.intacle.exception.ServiceException;
-import com.exqzore.intacle.model.service.status.UserServiceStatus;
+import com.exqzore.intacle.model.entity.User;
 
-import java.util.Map;
+import java.util.Optional;
 
 public interface UserService {
-    UserServiceStatus register(Map<String, String> parameters) throws ServiceException;
+    Optional<User> register(String login, String email, String password, String repeatPassword, String name, String surname) throws ServiceException;
 
-    UserServiceStatus login(String login, String password) throws ServiceException;
+    Optional<User> login(String login, String password) throws ServiceException;
 
-    UserServiceStatus activate(String login, String activationCode) throws ServiceException;
+    boolean activate(String login, String activationCode) throws ServiceException;
 }

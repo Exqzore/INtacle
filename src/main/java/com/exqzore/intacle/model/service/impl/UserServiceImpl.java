@@ -1,124 +1,109 @@
 package com.exqzore.intacle.model.service.impl;
 
-import com.exqzore.intacle.exception.DaoException;
-import com.exqzore.intacle.exception.PasswordEncoderException;
-import com.exqzore.intacle.exception.ServiceException;
+import com.exqzore.intacle.exception.*;
 import com.exqzore.intacle.model.dao.UserDao;
 import com.exqzore.intacle.model.dao.impl.UserDaoImpl;
 import com.exqzore.intacle.model.entity.User;
 import com.exqzore.intacle.model.service.UserService;
-import com.exqzore.intacle.model.service.status.UserServiceStatus;
 import com.exqzore.intacle.model.validator.Validator;
 import com.exqzore.intacle.util.PasswordEncoder;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 public class UserServiceImpl implements UserService {
     private final static Logger logger = LogManager.getLogger();
 
-    private static final UserServiceImpl instance = new UserServiceImpl();
+    private static final UserService instance = new UserServiceImpl();
 
     private final UserDao userDao = UserDaoImpl.getInstance();
-
-    public static final String LOGIN = "login";
-    public static final String EMAIL = "email";
-    public static final String PASSWORD = "password";
-    public static final String NAME = "name";
-    public static final String SURNAME = "surname";
 
     private UserServiceImpl() {
     }
 
-    public static UserServiceImpl getInstance() {
+    public static UserService getInstance() {
         return instance;
     }
 
     @Override
-    public UserServiceStatus register(Map<String, String> parameters) throws ServiceException {
-        UserServiceStatus serviceStatus = new UserServiceStatus();
+    public Optional<User> register(String login, String email, String password, String repeatPassword, String name, String surname)
+            throws ServiceException {
+        Optional<User> userOptional;
         boolean isLoginFree;
         try {
-            isLoginFree = userDao.isLoginFree(parameters.get(LOGIN));
+            isLoginFree = userDao.isLoginFree(login);
         } catch (DaoException exception) {
-            logger.log(Level.ERROR, exception.getMessage());
+            logger.log(Level.ERROR, exception);
             throw new ServiceException(exception);
         }
-        boolean validationResult = Validator.checkRegistration(parameters);
-        if (validationResult && isLoginFree) {
+        if (!isLoginFree) {
+            throw new UserLoginIsBusyException();
+        }
+        if (Validator.checkRegistration(login, email, password, repeatPassword, name, surname)) {
             try {
                 User user = new User();
-                user.setLogin(parameters.get(LOGIN));
-                user.setEmail(parameters.get(EMAIL));
-                user.setPassword(PasswordEncoder.encode(parameters.get(PASSWORD)));
-                user.setName(parameters.get(NAME));
-                user.setSurname(parameters.get(SURNAME));
+                user.setLogin(login);
+                user.setEmail(email);
+                user.setPassword(PasswordEncoder.encode(repeatPassword));
+                user.setName(name.isEmpty() ? null : name);
+                user.setSurname(surname.isEmpty() ? null : surname);
                 user.setActivationCode(UUID.randomUUID().toString());
-                userDao.create(user);
-                logger.log(Level.INFO, "New user: {}", user);
-                serviceStatus.setUser(user);
+                if (userDao.create(user)) {
+                    userOptional = Optional.of(user);
+                } else {
+                    userOptional = Optional.empty();
+                }
             } catch (DaoException | PasswordEncoderException exception) {
-                logger.log(Level.ERROR, exception.getMessage());
+                logger.log(Level.ERROR, exception);
                 throw new ServiceException(exception);
             }
-        } else if (!validationResult) {
-            serviceStatus.setInvalidParams(true);
         } else {
-            serviceStatus.setLoginBusy(true);
+            throw new InvalidParamsException();
         }
-        return serviceStatus;
+        return userOptional;
     }
 
     @Override
-    public UserServiceStatus login(String login, String password) throws ServiceException {
-        UserServiceStatus serviceStatus = new UserServiceStatus();
-        boolean validationResult = Validator.checkLogIn(login, password);
-        if (validationResult) {
+    public Optional<User> login(String login, String password) throws ServiceException {
+        Optional<User> userOptional;
+        if (Validator.checkLogIn(login, password)) {
             try {
                 password = PasswordEncoder.encode(password);
-                Optional<User> optionalUser = userDao.login(login, password);
-                if (optionalUser.isPresent()) {
-                    User user = optionalUser.get();
-                    if (user.getActivationCode() == null) {
-                        serviceStatus.setUser(user);
-                    } else {
-                        serviceStatus.setNotActivated(true);
-                    }
-                } else {
-                    serviceStatus.setInvalidParams(true);
-                }
+                userOptional = userDao.login(login, password);
             } catch (DaoException | PasswordEncoderException exception) {
-                logger.log(Level.ERROR, exception.getMessage());
+                logger.log(Level.ERROR, exception);
                 throw new ServiceException(exception);
             }
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                if (user.getActivationCode() != null) {
+                    throw new UserNotActivatedException();
+                }
+            } else {
+                throw new InvalidParamsException();
+            }
         } else {
-            serviceStatus.setInvalidParams(true);
+            throw new InvalidParamsException();
         }
-        return serviceStatus;
+        return userOptional;
     }
 
     @Override
-    public UserServiceStatus activate(String login, String activationCode) throws ServiceException {
-        UserServiceStatus serviceStatus = new UserServiceStatus();
+    public boolean activate(String login, String activationCode) throws ServiceException {
         boolean isActivated;
-        boolean validationResult = Validator.checkActivateUser(login, activationCode);
-        if (validationResult) {
+        if (Validator.checkActivateUser(login, activationCode)) {
             try {
                 isActivated = userDao.activate(login, activationCode);
-                if (!isActivated) {
-                    serviceStatus.setInvalidParams(true);
-                }
             } catch (DaoException exception) {
                 logger.log(Level.ERROR, exception.getMessage());
                 throw new ServiceException(exception);
             }
         } else {
-            serviceStatus.setInvalidParams(true);
+            throw new InvalidParamsException();
         }
-        return serviceStatus;
+        return isActivated;
     }
 }

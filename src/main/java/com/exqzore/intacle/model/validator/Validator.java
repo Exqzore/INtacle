@@ -1,15 +1,6 @@
 package com.exqzore.intacle.model.validator;
 
-import java.util.Map;
-
 public class Validator {
-    public static final String LOGIN = "login";
-    public static final String EMAIL = "email";
-    public static final String PASSWORD = "password";
-    public static final String REPEAT_PASSWORD = "repeat_password";
-    public static final String NAME = "name";
-    public static final String SURNAME = "surname";
-
     private Validator() {
     }
 
@@ -35,32 +26,26 @@ public class Validator {
         return result;
     }
 
-    public static boolean checkRegistration(Map<String, String> parameters) {
+    public static boolean checkRegistration(String login, String email, String password, String repeatPassword, String name, String surname) {
         boolean result = true;
-        String login = parameters.get(LOGIN);
         if (login != null && !LoginValidator.checkLogin(login)) {
             result = false;
         }
-        String email = parameters.get(EMAIL);
         if (email != null && !EmailValidator.checkEmail(email)) {
             result = false;
         }
-        String password = parameters.get(PASSWORD);
         if (password != null && !PasswordValidator.checkPassword(password)) {
             result = false;
         }
-        String repeatPassword = parameters.get(REPEAT_PASSWORD);
         if (repeatPassword != null && !PasswordValidator.checkPassword(repeatPassword)) {
             result = false;
         }
         if (repeatPassword != null && !repeatPassword.equals(password)) {
             result = false;
         }
-        String name = parameters.get(NAME);
         if (name != null && !name.isEmpty() && !NameValidator.checkName(name)) {
             result = false;
         }
-        String surname = parameters.get(SURNAME);
         if (surname != null && !surname.isEmpty() && !NameValidator.checkName(surname)) {
             result = false;
         }

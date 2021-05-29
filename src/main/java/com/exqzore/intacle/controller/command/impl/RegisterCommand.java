@@ -1,26 +1,33 @@
 package com.exqzore.intacle.controller.command.impl;
 
-import com.exqzore.intacle.controller.RequestParameter;
 import com.exqzore.intacle.controller.WebPageRequest;
 import com.exqzore.intacle.controller.command.Command;
+import com.exqzore.intacle.exception.InvalidParamsException;
 import com.exqzore.intacle.exception.ServiceException;
+import com.exqzore.intacle.exception.UserLoginIsBusyException;
 import com.exqzore.intacle.model.entity.User;
 import com.exqzore.intacle.model.service.MailService;
+import com.exqzore.intacle.model.service.UserService;
 import com.exqzore.intacle.model.service.impl.UserServiceImpl;
-import com.exqzore.intacle.model.service.status.UserServiceStatus;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 public class RegisterCommand implements Command {
     private static final Logger logger = LogManager.getLogger();
 
-    private final UserServiceImpl userService = UserServiceImpl.getInstance();
+    private final UserService userService = UserServiceImpl.getInstance();
+
+    private static final String LOGIN = "login";
+    private static final String EMAIL = "email";
+    private static final String PASSWORD = "password";
+    private static final String REPEAT_PASSWORD = "repeat_password";
+    private static final String NAME = "name";
+    private static final String SURNAME = "surname";
 
     private static final String IS_MESSAGE_SENT_TO_MAIL = "is_message_sent_to_mail";
     private static final String IS_INVALID_PARAMS = "is_invalid_params";
@@ -30,35 +37,38 @@ public class RegisterCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String resultPage;
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put(RequestParameter.LOGIN, request.getParameter(RequestParameter.LOGIN));
-        parameters.put(RequestParameter.EMAIL, request.getParameter(RequestParameter.EMAIL));
-        parameters.put(RequestParameter.PASSWORD, request.getParameter(RequestParameter.PASSWORD));
-        parameters.put(RequestParameter.REPEAT_PASSWORD, request.getParameter(RequestParameter.REPEAT_PASSWORD));
-        parameters.put(RequestParameter.NAME, request.getParameter(RequestParameter.NAME));
-        parameters.put(RequestParameter.SURNAME, request.getParameter(RequestParameter.SURNAME));
+        String login = request.getParameter(LOGIN);
+        String email = request.getParameter(EMAIL);
+        String password = request.getParameter(PASSWORD);
+        String repeatPassword = request.getParameter(REPEAT_PASSWORD);
+        String name = request.getParameter(NAME);
+        String surname = request.getParameter(SURNAME);
         HttpSession session = request.getSession();
         session.setAttribute(IS_INVALID_PARAMS, false);
         session.setAttribute(IS_LOGIN_BUSY, false);
         session.setAttribute(IS_USER_CREATION_ERROR, false);
         session.setAttribute(IS_MESSAGE_SENT_TO_MAIL, false);
         try {
-            UserServiceStatus userServiceStatus = userService.register(parameters);
-            if (userServiceStatus.isGood()) {
-                User user = userServiceStatus.getUser();
+            Optional<User> userOptional = userService.register(login, email, password, repeatPassword, name, surname);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
                 MailService.sendMessage(user.getEmail(), MailService.prepareUrl(user.getLogin(), user.getActivationCode()));
                 session.setAttribute(IS_MESSAGE_SENT_TO_MAIL, true);
                 resultPage = WebPageRequest.USER_ACTIVATION;
             } else {
-                if (userServiceStatus.isInvalidParams()) {
-                    session.setAttribute(IS_INVALID_PARAMS, true);
-                } else {
-                    session.setAttribute(IS_LOGIN_BUSY, true);
-                }
+                session.setAttribute(IS_USER_CREATION_ERROR, true);
                 resultPage = WebPageRequest.GO_REGISTRATION_PAGE;
             }
+        } catch (UserLoginIsBusyException exception) {
+            logger.log(Level.INFO, exception);
+            session.setAttribute(IS_LOGIN_BUSY, true);
+            resultPage = WebPageRequest.GO_REGISTRATION_PAGE;
+        } catch (InvalidParamsException exception) {
+            logger.log(Level.INFO, exception);
+            session.setAttribute(IS_INVALID_PARAMS, true);
+            resultPage = WebPageRequest.GO_REGISTRATION_PAGE;
         } catch (ServiceException exception) {
-            logger.log(Level.ERROR, exception.getMessage());
+            logger.log(Level.ERROR, exception);
             session.setAttribute(IS_USER_CREATION_ERROR, true);
             resultPage = WebPageRequest.GO_REGISTRATION_PAGE;
         }

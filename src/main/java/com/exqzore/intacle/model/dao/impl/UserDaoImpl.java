@@ -44,22 +44,29 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void create(User user) throws DaoException {
+    public boolean create(User user) throws DaoException {
+        boolean result;
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(USER_REGISTRATION)) {
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getEmail());
             statement.setString(3, user.getPassword());
-            statement.setString(4, user.getName().isEmpty() ? null : user.getName());
-            statement.setString(5, user.getSurname().isEmpty() ? null : user.getSurname());
+            statement.setString(4, user.getName());
+            statement.setString(5, user.getSurname());
             statement.setString(6, user.getLevel());
             statement.setString(7, user.getActivationCode());
-            statement.execute();
-            logger.log(Level.INFO, "New user '{}' is created", user);
+            if (statement.executeUpdate() > 0) {
+                logger.log(Level.INFO, "New user '{}' is created", user);
+                result = true;
+            } else {
+                logger.log(Level.INFO, "User '{}' is not created", user);
+                result = false;
+            }
         } catch (SQLException exception) {
             logger.log(Level.ERROR, "User creation error", exception);
             throw new DaoException(exception);
         }
+        return result;
     }
 
     @Override
@@ -116,16 +123,16 @@ public class UserDaoImpl implements UserDao {
     public boolean activate(String login, String activationCode) throws DaoException {
         boolean result;
         try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement1 = connection.prepareStatement(LOGIN_WITH_ACTIVATION_CODE_EXISTS);
-             PreparedStatement statement2 = connection.prepareStatement(USER_ACTIVATION)) {
-            statement1.setString(1, login);
-            statement1.setString(2, activationCode);
-            ResultSet resultSet = statement1.executeQuery();
+             PreparedStatement statementCheckLogin = connection.prepareStatement(LOGIN_WITH_ACTIVATION_CODE_EXISTS);
+             PreparedStatement statementActivate = connection.prepareStatement(USER_ACTIVATION)) {
+            statementCheckLogin.setString(1, login);
+            statementCheckLogin.setString(2, activationCode);
+            ResultSet resultSet = statementCheckLogin.executeQuery();
             result = resultSet.next() && resultSet.getInt(1) == 1;
             if (result) {
-                statement2.setString(1, login);
-                statement2.setString(2, activationCode);
-                statement2.execute();
+                statementActivate.setString(1, login);
+                statementActivate.setString(2, activationCode);
+                statementActivate.execute();
                 logger.log(Level.INFO, "User with login '{}' successfully activated", login);
             } else {
                 logger.log(Level.INFO, "User with login '{}' not activated", login);
