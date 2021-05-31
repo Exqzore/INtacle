@@ -15,26 +15,38 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public class UserDaoImpl implements UserDao {
-    private final static Logger logger = LogManager.getLogger(UserDaoImpl.class);
+    private final static Logger logger = LogManager.getLogger();
 
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     private final static UserDao instance = new UserDaoImpl();
 
     private static final String USER_REGISTRATION = """
-            INSERT INTO users (login, email, password, name, surname, user_level, activation_code) VALUES (?,?,?,?,?,?,?)
+            INSERT INTO users (login, email, password, name, surname, user_level, activation_code, avatar_image_path)
+            VALUES (?,?,?,?,?,?,?,?)
             """;
     private final static String USER_BY_LOGIN_AND_PASSWORD = """
-            SELECT login, email, name, surname, avatar_image_path, user_level, activation_code FROM users WHERE login=? AND password=?
+            SELECT u.id, u.email, u.name, u.surname, u.avatar_image_path, u.user_level, COUNT(f.follower),
+            (SELECT COUNT(f2.following) FROM followings f2 WHERE f2.follower = u.id) FROM users u
+            LEFT JOIN followings f ON u.id = f.following
+            WHERE u.login = ? AND u.password = ? AND u.activation_code IS NULL
             """;
     private final static String LOGIN_WITH_ACTIVATION_CODE_EXISTS = """
-            SELECT COUNT(login) FROM users WHERE login=? AND activation_code=?
+            SELECT COUNT(login) FROM users WHERE login = ? AND activation_code = ?
             """;
     private final static String USER_ACTIVATION = """
-            UPDATE users SET activation_code=null WHERE login=? AND activation_code=?
+            UPDATE users SET activation_code = NULL WHERE login = ? AND activation_code = ?
             """;
-    private final static String LOGIN_EXISTS = "SELECT COUNT(login) FROM users WHERE login=?";
-
+    private final static String FIND_BY_LOGIN = """
+            SELECT u.id, u.email, u.name, u.surname, u.avatar_image_path, u.user_level, COUNT(f.follower),
+            (SELECT COUNT(f2.following) FROM followings f2 WHERE f2.follower = u.id) FROM users u
+            LEFT JOIN followings f ON u.id = f.following
+            WHERE u.login = ? AND u.activation_code IS NULL
+            """;
+    private final static String IS_SUBSCRIBE = """
+            SELECT COUNT(f.follower) FROM followings f WHERE f.follower = ? AND f.following = ?
+            """;
+    private final static String LOGIN_EXISTS = "SELECT COUNT(login) FROM users WHERE login = ?";
 
     private UserDaoImpl() {
     }
@@ -55,6 +67,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(5, user.getSurname());
             statement.setString(6, user.getLevel());
             statement.setString(7, user.getActivationCode());
+            statement.setString(8, user.getAvatarPath());
             if (statement.executeUpdate() > 0) {
                 logger.log(Level.INFO, "New user '{}' is created", user);
                 result = true;
@@ -90,22 +103,80 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> login(String login, String password) throws DaoException {
+    public Optional<User> findByLogin(String login) throws DaoException {
         Optional<User> optionalUser;
         try (Connection connection = connectionPool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(USER_BY_LOGIN_AND_PASSWORD)) {
+             PreparedStatement statement = connection.prepareStatement(FIND_BY_LOGIN)) {
             statement.setString(1, login);
-            statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 User user = new User();
-                user.setLogin(resultSet.getString(1));
+                user.setId(resultSet.getLong(1));
+                user.setLogin(login);
                 user.setEmail(resultSet.getString(2));
                 user.setName(resultSet.getString(3));
                 user.setSurname(resultSet.getString(4));
                 user.setAvatarPath(resultSet.getString(5));
                 user.setLevel(resultSet.getString(6));
-                user.setActivationCode(resultSet.getString(7));
+                user.setSubscriptionsCount(resultSet.getInt(7));
+                user.setSubscribersCount(resultSet.getInt(8));
+                optionalUser = Optional.of(user);
+                logger.log(Level.INFO, "User with login '{}' found successfully", login);
+            } else {
+                optionalUser = Optional.empty();
+                logger.log(Level.INFO, "User with login '{}' is not found", login);
+            }
+        } catch (SQLException exception) {
+            logger.log(Level.ERROR, "User found error", exception);
+            throw new DaoException(exception);
+        }
+        return optionalUser;
+    }
+
+    @Override
+    public boolean activate(String login, String activationCode) throws DaoException {
+        boolean result;
+        try (Connection connection = ConnectionPool.getInstance().getConnection();
+             PreparedStatement checkLoginStatement = connection.prepareStatement(LOGIN_WITH_ACTIVATION_CODE_EXISTS);
+             PreparedStatement activateStatement = connection.prepareStatement(USER_ACTIVATION)) {
+            checkLoginStatement.setString(1, login);
+            checkLoginStatement.setString(2, activationCode);
+            ResultSet resultSet = checkLoginStatement.executeQuery();
+            result = resultSet.next() && resultSet.getInt(1) == 1;
+            if (result) {
+                activateStatement.setString(1, login);
+                activateStatement.setString(2, activationCode);
+                activateStatement.execute();
+                logger.log(Level.INFO, "User with login '{}' successfully activated", login);
+            } else {
+                logger.log(Level.INFO, "User with login '{}' not activated", login);
+            }
+        } catch (SQLException exception) {
+            logger.log(Level.ERROR, "User activation error", exception);
+            throw new DaoException(exception);
+        }
+        return result;
+    }
+
+    @Override
+    public Optional<User> login(String login, String password) throws DaoException {
+        Optional<User> optionalUser;
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement getUserStatement = connection.prepareStatement(USER_BY_LOGIN_AND_PASSWORD)) {
+            getUserStatement.setString(1, login);
+            getUserStatement.setString(2, password);
+            ResultSet resultSet = getUserStatement.executeQuery();
+            if (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getLong(1));
+                user.setLogin(login);
+                user.setEmail(resultSet.getString(2));
+                user.setName(resultSet.getString(3));
+                user.setSurname(resultSet.getString(4));
+                user.setAvatarPath(resultSet.getString(5));
+                user.setLevel(resultSet.getString(6));
+                user.setSubscriptionsCount(resultSet.getInt(7));
+                user.setSubscribersCount(resultSet.getInt(8));
                 optionalUser = Optional.of(user);
                 logger.log(Level.INFO, "User with login '{}' successfully authenticated", login);
             } else {
@@ -120,25 +191,21 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean activate(String login, String activationCode) throws DaoException {
+    public boolean isSubscribe(long followerId, long followingId) throws DaoException {
         boolean result;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statementCheckLogin = connection.prepareStatement(LOGIN_WITH_ACTIVATION_CODE_EXISTS);
-             PreparedStatement statementActivate = connection.prepareStatement(USER_ACTIVATION)) {
-            statementCheckLogin.setString(1, login);
-            statementCheckLogin.setString(2, activationCode);
-            ResultSet resultSet = statementCheckLogin.executeQuery();
-            result = resultSet.next() && resultSet.getInt(1) == 1;
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(IS_SUBSCRIBE)) {
+            statement.setLong(1, followerId);
+            statement.setLong(2, followingId);
+            ResultSet resultSet = statement.executeQuery();
+            result = resultSet.next() && resultSet.getInt(1) != 0;
             if (result) {
-                statementActivate.setString(1, login);
-                statementActivate.setString(2, activationCode);
-                statementActivate.execute();
-                logger.log(Level.INFO, "User with login '{}' successfully activated", login);
+                logger.log(Level.INFO, "User with id '{}' subscribed to user with id '{}'", followerId, followingId);
             } else {
-                logger.log(Level.INFO, "User with login '{}' not activated", login);
+                logger.log(Level.INFO, "User with id '{}' not subscribed to user with id '{}'", followerId, followingId);
             }
         } catch (SQLException exception) {
-            logger.log(Level.ERROR, "User activation error", exception);
+            logger.log(Level.ERROR, "IsSubscribe check error", exception);
             throw new DaoException(exception);
         }
         return result;

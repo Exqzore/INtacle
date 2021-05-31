@@ -1,9 +1,6 @@
 package com.exqzore.intacle.model.entity;
 
 public class User {
-    private static final String DEFAULT_AVATAR_PATH = "default_avatar.png";
-    private static final String DEFAULT_USER_LEVEL = "user";
-
     private long id;
     private String login;
     private String name;
@@ -11,33 +8,26 @@ public class User {
     private String email;
     private String password;
     private String activationCode;
-    private String level = DEFAULT_USER_LEVEL;
-    private String avatarPath = DEFAULT_AVATAR_PATH;
+    private String level;
+    private String avatarPath;
+    private int subscribersCount;
+    private int subscriptionsCount;
 
     public User() {
     }
 
-    public User(long id) {
-        this.id = id;
-    }
-
-    public User(long id, String login, String name, String surname, String email, String activationCode) {
+    public User(long id, String login, String name, String surname, String email, String level, String activationCode,
+                String avatarPath, int subscribersCount, int subscriptionsCount) {
         this.id = id;
         this.login = login;
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.activationCode = activationCode;
-    }
-
-    public User(long id, String login, String name, String surname, String email, String activationCode, String avatarPath) {
-        this.id = id;
-        this.login = login;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
+        this.level = level;
         this.activationCode = activationCode;
         this.avatarPath = avatarPath;
+        this.subscribersCount = subscribersCount;
+        this.subscriptionsCount = subscriptionsCount;
     }
 
     public long getId() {
@@ -112,6 +102,22 @@ public class User {
         this.activationCode = activationCode;
     }
 
+    public int getSubscribersCount() {
+        return subscribersCount;
+    }
+
+    public void setSubscribersCount(int subscribersCount) {
+        this.subscribersCount = subscribersCount;
+    }
+
+    public int getSubscriptionsCount() {
+        return subscriptionsCount;
+    }
+
+    public void setSubscriptionsCount(int subscriptionsCount) {
+        this.subscriptionsCount = subscriptionsCount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -137,8 +143,10 @@ public class User {
         sb.append(", name='").append(name).append('\'');
         sb.append(", surname='").append(surname).append('\'');
         sb.append(", email='").append(email).append('\'');
-        sb.append(", avatarPath='").append(avatarPath).append('\'');
         sb.append(", level='").append(level).append('\'');
+        sb.append(", avatarPath='").append(avatarPath).append('\'');
+        sb.append(", subscribersCount=").append(subscribersCount);
+        sb.append(", subscriptionsCount=").append(subscriptionsCount);
         sb.append('}');
         return sb.toString();
     }

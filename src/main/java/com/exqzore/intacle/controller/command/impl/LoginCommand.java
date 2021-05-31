@@ -24,10 +24,9 @@ public class LoginCommand implements Command {
     private static final String LOGIN = "login";
     private static final String PASSWORD = "password";
 
-    private static final String IS_INVALID_PARAMS = "is_invalid_params";
-    private static final String IS_USER_LOGIN_ERROR = "is_user_login_error";
-    private static final String IS_NOT_ACTIVATED = "is_not_activated";
-    private static final String IS_LOGIN = "is_login";
+    private static final String IS_INVALID_PARAMS = "isInvalidParams";
+    private static final String IS_USER_LOGIN_ERROR = "isUserLoginError";
+    private static final String IS_NOT_ACTIVATED = "isNotActivated";
     private static final String USER = "user";
 
     @Override
@@ -43,7 +42,6 @@ public class LoginCommand implements Command {
             Optional<User> userOptional = userService.login(login, password);
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
-                session.setAttribute(IS_LOGIN, true);
                 session.setAttribute(USER, user);
                 resultPage = String.format(WebPageRequest.SHOW_PROFILE, user.getLogin());
             } else {

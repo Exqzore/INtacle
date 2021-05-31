@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class MessageDaoImpl implements MessageDao {
-    private final static Logger logger = LogManager.getLogger(UserDaoImpl.class);
+    private final static Logger logger = LogManager.getLogger();
 
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
 

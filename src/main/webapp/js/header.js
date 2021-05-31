@@ -9,7 +9,3 @@ function displayProfileMenu() {
         document.getElementById('profile-arrow__menu').classList.remove('profile-arrow__selection-selected')
     }
 }
-
-function goLoginPage(elem) {
-    document.location.href = elem.querySelector('a').href
-}

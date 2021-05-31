@@ -29,10 +29,10 @@ public class RegisterCommand implements Command {
     private static final String NAME = "name";
     private static final String SURNAME = "surname";
 
-    private static final String IS_MESSAGE_SENT_TO_MAIL = "is_message_sent_to_mail";
-    private static final String IS_INVALID_PARAMS = "is_invalid_params";
-    private static final String IS_LOGIN_BUSY = "is_login_busy";
-    private static final String IS_USER_CREATION_ERROR = "is_user_creation_error";
+    private static final String IS_MESSAGE_SENT_TO_MAIL = "isMessageSentToMail";
+    private static final String IS_INVALID_PARAMS = "isInvalidParams";
+    private static final String IS_LOGIN_BUSY = "isLoginBusy";
+    private static final String IS_USER_CREATION_ERROR = "isUserCreationError";
 
     @Override
     public String execute(HttpServletRequest request) {

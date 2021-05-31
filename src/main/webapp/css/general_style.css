@@ -3,11 +3,10 @@ body, html {
 	width: 100%;
 	margin: 0;
 	font-family: 'Raleway', sans-serif;
-	background-color: #eeeff0;
 }
 
 body {
-	background: linear-gradient(115deg, #56d8e4 10%, #d600ea 90%);
+	background: linear-gradient(115deg, #56d8e4 25%, #d600ea 75%) fixed;
 }
 
 .main-holder {

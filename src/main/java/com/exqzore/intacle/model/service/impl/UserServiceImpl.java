@@ -5,6 +5,7 @@ import com.exqzore.intacle.model.dao.UserDao;
 import com.exqzore.intacle.model.dao.impl.UserDaoImpl;
 import com.exqzore.intacle.model.entity.User;
 import com.exqzore.intacle.model.service.UserService;
+import com.exqzore.intacle.model.validator.LoginValidator;
 import com.exqzore.intacle.model.validator.Validator;
 import com.exqzore.intacle.util.PasswordEncoder;
 import org.apache.logging.log4j.Level;
@@ -20,6 +21,9 @@ public class UserServiceImpl implements UserService {
     private static final UserService instance = new UserServiceImpl();
 
     private final UserDao userDao = UserDaoImpl.getInstance();
+
+    private static final String DEFAULT_AVATAR_PATH = "default_avatar.png";
+    private static final String DEFAULT_USER_LEVEL = "user";
 
     private UserServiceImpl() {
     }
@@ -48,6 +52,8 @@ public class UserServiceImpl implements UserService {
                 user.setLogin(login);
                 user.setEmail(email);
                 user.setPassword(PasswordEncoder.encode(repeatPassword));
+                user.setAvatarPath(DEFAULT_AVATAR_PATH);
+                user.setLevel(DEFAULT_USER_LEVEL);
                 user.setName(name.isEmpty() ? null : name);
                 user.setSurname(surname.isEmpty() ? null : surname);
                 user.setActivationCode(UUID.randomUUID().toString());
@@ -98,12 +104,40 @@ public class UserServiceImpl implements UserService {
             try {
                 isActivated = userDao.activate(login, activationCode);
             } catch (DaoException exception) {
-                logger.log(Level.ERROR, exception.getMessage());
+                logger.log(Level.ERROR, exception);
                 throw new ServiceException(exception);
             }
         } else {
             throw new InvalidParamsException();
         }
         return isActivated;
+    }
+
+    @Override
+    public Optional<User> userByLogin(String login) throws ServiceException {
+        Optional<User> userOptional;
+        if(LoginValidator.checkLogin(login)) {
+            try {
+                userOptional = userDao.findByLogin(login);
+            } catch (DaoException exception) {
+                logger.log(Level.ERROR, exception);
+                throw new ServiceException(exception);
+            }
+        } else {
+            throw new InvalidParamsException();
+        }
+        return userOptional;
+    }
+
+    @Override
+    public boolean isSubscribe(long followerId, long followingId) throws ServiceException {
+        boolean isSubscribe;
+        try {
+            isSubscribe = userDao.isSubscribe(followerId, followingId);
+        } catch (DaoException exception) {
+            logger.log(Level.ERROR, exception);
+            throw new ServiceException(exception);
+        }
+        return isSubscribe;
     }
 }

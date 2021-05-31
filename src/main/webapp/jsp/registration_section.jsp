@@ -6,13 +6,13 @@
     <form action="${pageContext.request.contextPath}/main?command=register" method="post"
           onsubmit="toRegister(this); return false">
         <c:choose>
-            <c:when test="${is_login_busy}">
+            <c:when test="${isLoginBusy}">
                 <div class="error-description">This login is already in use</div>
             </c:when>
-            <c:when test="${is_user_creation_error}">
+            <c:when test="${isUserCreationError}">
                 <div class="error-description">Failed to create account</div>
             </c:when>
-            <c:when test="${is_invalid_params}">
+            <c:when test="${isInvalidParams}">
                 <div class="error-description">Incorrectly entered data</div>
             </c:when>
         </c:choose>

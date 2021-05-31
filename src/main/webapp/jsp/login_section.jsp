@@ -6,13 +6,13 @@
     <form action="${pageContext.request.contextPath}/main?command=login" method="post"
           onsubmit="toLogin(this); return false">
         <c:choose>
-            <c:when test="${is_not_activated}">
+            <c:when test="${isNotActivated}">
                 <div class="error-description">This account is not activated</div>
             </c:when>
-            <c:when test="${is_invalid_params}">
+            <c:when test="${isInvalidParams}">
                 <div class="error-description">Incorrectly entered data</div>
             </c:when>
-            <c:when test="${is_user_login_error}">
+            <c:when test="${isUserLoginError}">
                 <div class="error-description">Failed to login user</div>
             </c:when>
         </c:choose>

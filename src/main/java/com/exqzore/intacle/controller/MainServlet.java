@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 
+//@WebServlet(urlPatterns = {"/", "/profile/*", "/main"})
 @WebServlet("/main")
 public class MainServlet extends HttpServlet {
     private static final Logger logger = LogManager.getLogger();

@@ -11,6 +11,7 @@ public enum CommandProvider implements Command{
     GO_TO_CHAT_PAGE(GoToChatPageCommand.INSTANCE),
 
     LOGIN(new LoginCommand()),
+    LOGOUT(new LogoutCommand()),
     TO_LOGIN_PAGE(new GoLoginCommand()),
     REGISTER(new RegisterCommand()),
     TO_REGISTRATION_PAGE(new GoRegisterCommand()),

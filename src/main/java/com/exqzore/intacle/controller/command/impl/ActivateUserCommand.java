@@ -20,7 +20,7 @@ public class ActivateUserCommand implements Command {
     private static final String LOGIN = "login";
     private static final String ACTIVATION_CODE = "activation_code";
 
-    private static final String IS_INVALID_ACTIVATE_PARAMS = "is_invalid_activate_params";
+    private static final String IS_INVALID_ACTIVATE_PARAMS = "isInvalidActivateParams";
 
     @Override
     public String execute(HttpServletRequest request) {

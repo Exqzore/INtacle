@@ -15,9 +15,15 @@
     <div class="empty-place"></div>
     <div class="activation-description">
         <c:choose>
-            <c:when test="${is_message_sent_to_mail}">A message containing a link with an activation code has been sent to your mailbox</c:when>
-            <c:when test="${is_invalid_activate_params}">User not activated</c:when>
-            <c:otherwise>User successfully activated</c:otherwise>
+            <c:when test="${isMessageSentToMail}">
+                A message containing a link with an activation code has been sent to your mailbox
+            </c:when>
+            <c:when test="${isInvalidActivateParams}">
+                User not activated
+            </c:when>
+            <c:otherwise>
+                User successfully activated
+            </c:otherwise>
         </c:choose>
     </div>
     <div class="empty-place"></div>
