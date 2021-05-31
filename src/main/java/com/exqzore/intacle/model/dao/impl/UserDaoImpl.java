@@ -26,10 +26,8 @@ public class UserDaoImpl implements UserDao {
             VALUES (?,?,?,?,?,?,?,?)
             """;
     private final static String USER_BY_LOGIN_AND_PASSWORD = """
-            SELECT u.id, u.email, u.name, u.surname, u.avatar_image_path, u.user_level, COUNT(f.follower),
-            (SELECT COUNT(f2.following) FROM followings f2 WHERE f2.follower = u.id) FROM users u
-            LEFT JOIN followings f ON u.id = f.following
-            WHERE u.login = ? AND u.password = ? AND u.activation_code IS NULL
+            SELECT id, email, name, surname, avatar_image_path, user_level FROM users
+            WHERE login = ? AND password = ? AND activation_code IS NULL
             """;
     private final static String LOGIN_WITH_ACTIVATION_CODE_EXISTS = """
             SELECT COUNT(login) FROM users WHERE login = ? AND activation_code = ?
@@ -38,13 +36,8 @@ public class UserDaoImpl implements UserDao {
             UPDATE users SET activation_code = NULL WHERE login = ? AND activation_code = ?
             """;
     private final static String FIND_BY_LOGIN = """
-            SELECT u.id, u.email, u.name, u.surname, u.avatar_image_path, u.user_level, COUNT(f.follower),
-            (SELECT COUNT(f2.following) FROM followings f2 WHERE f2.follower = u.id) FROM users u
-            LEFT JOIN followings f ON u.id = f.following
-            WHERE u.login = ? AND u.activation_code IS NULL
-            """;
-    private final static String IS_SUBSCRIBE = """
-            SELECT COUNT(f.follower) FROM followings f WHERE f.follower = ? AND f.following = ?
+            SELECT id, email, name, surname, avatar_image_path, user_level FROM users
+            WHERE login = ? AND activation_code IS NULL
             """;
     private final static String LOGIN_EXISTS = "SELECT COUNT(login) FROM users WHERE login = ?";
 
@@ -118,8 +111,6 @@ public class UserDaoImpl implements UserDao {
                 user.setSurname(resultSet.getString(4));
                 user.setAvatarPath(resultSet.getString(5));
                 user.setLevel(resultSet.getString(6));
-                user.setSubscriptionsCount(resultSet.getInt(7));
-                user.setSubscribersCount(resultSet.getInt(8));
                 optionalUser = Optional.of(user);
                 logger.log(Level.INFO, "User with login '{}' found successfully", login);
             } else {
@@ -175,8 +166,6 @@ public class UserDaoImpl implements UserDao {
                 user.setSurname(resultSet.getString(4));
                 user.setAvatarPath(resultSet.getString(5));
                 user.setLevel(resultSet.getString(6));
-                user.setSubscriptionsCount(resultSet.getInt(7));
-                user.setSubscribersCount(resultSet.getInt(8));
                 optionalUser = Optional.of(user);
                 logger.log(Level.INFO, "User with login '{}' successfully authenticated", login);
             } else {
@@ -188,26 +177,5 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException(exception);
         }
         return optionalUser;
-    }
-
-    @Override
-    public boolean isSubscribe(long followerId, long followingId) throws DaoException {
-        boolean result;
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(IS_SUBSCRIBE)) {
-            statement.setLong(1, followerId);
-            statement.setLong(2, followingId);
-            ResultSet resultSet = statement.executeQuery();
-            result = resultSet.next() && resultSet.getInt(1) != 0;
-            if (result) {
-                logger.log(Level.INFO, "User with id '{}' subscribed to user with id '{}'", followerId, followingId);
-            } else {
-                logger.log(Level.INFO, "User with id '{}' not subscribed to user with id '{}'", followerId, followingId);
-            }
-        } catch (SQLException exception) {
-            logger.log(Level.ERROR, "IsSubscribe check error", exception);
-            throw new DaoException(exception);
-        }
-        return result;
     }
 }

@@ -16,7 +16,11 @@ public enum CommandProvider implements Command{
     REGISTER(new RegisterCommand()),
     TO_REGISTRATION_PAGE(new GoRegisterCommand()),
     ACTIVATE_USER(new ActivateUserCommand()),
-    SHOW_PROFILE(new ShowProfileCommand());
+    SHOW_PROFILE(new ShowProfileCommand()),
+    SUBSCRIBE(new SubscribeCommand()),
+    UNSUBSCRIBE(new UnsubscribeCommand()),
+    SHOW_SUBSCRIBERS(new ShowSubscribersCommand()),
+    SHOW_SUBSCRIPTIONS(new ShowSubscriptionsCommand());
 
     Command command;
 

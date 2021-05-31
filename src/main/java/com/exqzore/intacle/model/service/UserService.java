@@ -10,9 +10,7 @@ public interface UserService {
 
     Optional<User> login(String login, String password) throws ServiceException;
 
-    Optional<User> userByLogin(String login) throws ServiceException;
+    Optional<User> findByLogin(String login) throws ServiceException;
 
     boolean activate(String login, String activationCode) throws ServiceException;
-
-    boolean isSubscribe(long followerId, long followingId) throws ServiceException;
 }

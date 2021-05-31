@@ -56,8 +56,8 @@
                     </c:choose>
                     <div class="profile__email">
                         <label class="profile__input-label" for="profile__email">email:</label>
-                        <input id="profile__email" class="profile__email-input" type="text"
-                               value="${requestedUser.email}" name="email" readonly>
+                        <input id="profile__email" class="profile__email-input" type="text" value="${requestedUser.email}"
+                               name="email" readonly>
                     </div>
                     <div class="profile__decoration bottom__decoration"></div>
                     <c:choose>
@@ -67,24 +67,32 @@
                         <c:otherwise>
                             <c:choose>
                                 <c:when test="${isSubscribe}">
-                                    <button type="submit" class="profile__action-btn">unsubscribe</button>
+                                    <a href="${pageContext.request.contextPath}/main?command=unsubscribe&login=${requestedUser.login}"
+                                       class="profile__action-btn">
+                                        unsubscribe
+                                    </a>
                                 </c:when>
                                 <c:otherwise>
-                                    <button type="submit" class="profile__action-btn">subscribe</button>
+                                    <a href="${pageContext.request.contextPath}/main?command=subscribe&login=${requestedUser.login}"
+                                       class="profile__action-btn">
+                                        subscribe
+                                    </a>
                                 </c:otherwise>
                             </c:choose>
                         </c:otherwise>
                     </c:choose>
                     <div class="profile__decoration full-decoration"></div>
                     <div class="profile__subscribers-subscriptions">
-                        <div class="profile__subscribers">
+                        <a class="profile__subscribers"
+                           href="${pageContext.request.contextPath}/main?command=show_subscriptions&login=${requestedUser.login}">
                             <label class="subscribers-number">${requestedUser.subscriptionsCount}</label>
                             <label class="subscribers-text">Subscriptions</label>
-                        </div>
-                        <div class="profile__subscribers">
+                        </a>
+                        <a class="profile__subscribers"
+                           href="${pageContext.request.contextPath}/main?command=show_subscribers&login=${requestedUser.login}">
                             <label class="subscribers-number">${requestedUser.subscribersCount}</label>
                             <label class="subscribers-text">Subscribers</label>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>

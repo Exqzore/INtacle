@@ -81,16 +81,18 @@
 .profile__action-btn {
 	margin-left: 210px;
 	width: 180px;
-	height: 28px;
+	height: 24px;
 	color: rgba(56, 56, 56, .6);
 	border: 1px solid rgba(0, 0, 0, .1);
 	border-radius: 5px;
 	background-color: rgba(0, 0, 0, .1);
 	transition: all .2s;
 	font-size: 18px;
-  letter-spacing: 1px;
+  	letter-spacing: 1px;
 	position: absolute;
 	top: 130px;
+	text-align: center;
+	text-decoration: none;
 }
 
 .profile__action-btn:hover {
@@ -114,6 +116,7 @@
 	flex-direction: column;
 	width: 120px;
 	height: 64px;
+	text-decoration: none;
 }
 
 .profile__subscribers:hover {
@@ -130,6 +133,7 @@
 .subscribers-text {
 	text-align: center;
 	height: 20px;
+	color: rgb(56, 56, 56);
 }
 
 .profile__input-name-surname {

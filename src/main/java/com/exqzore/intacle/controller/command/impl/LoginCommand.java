@@ -23,7 +23,6 @@ public class LoginCommand implements Command {
 
     private static final String LOGIN = "login";
     private static final String PASSWORD = "password";
-
     private static final String IS_INVALID_PARAMS = "isInvalidParams";
     private static final String IS_USER_LOGIN_ERROR = "isUserLoginError";
     private static final String IS_NOT_ACTIVATED = "isNotActivated";

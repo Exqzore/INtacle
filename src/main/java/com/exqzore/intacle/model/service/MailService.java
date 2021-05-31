@@ -20,8 +20,8 @@ public class MailService {
     private final static String EMAIL_PROPERTY_PATH = "properties/email.properties";
     private final static String SENDER = "sender";
     private final static String PASSWORD = "password";
-    private final static String SUBJECT = "Account activation";
-    private final static String CONTEXT_PATH = "http://localhost:8080/intacle/";
+    private final static String SUBJECT = "Account activation"; //TODO: add to properties file
+    private final static String CONTEXT_PATH = "http://localhost:8080/intacle/"; //TODO: add to properties file
     private final static String MESSAGE = """
             <div>
              	<div><b>INtacle</b></div>
@@ -31,7 +31,7 @@ public class MailService {
              		If you have not created an account with this mailbox, ignore this letter.
              	</div>
             </div>
-            """;
+            """; //TODO: add to properties file
 
     static {
         try {

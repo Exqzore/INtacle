@@ -1,10 +1,14 @@
 package com.exqzore.intacle.model.service.impl;
 
+import com.exqzore.intacle.exception.DaoException;
+import com.exqzore.intacle.exception.InvalidParamsException;
 import com.exqzore.intacle.exception.ServiceException;
 import com.exqzore.intacle.model.dao.SubscriberDao;
 import com.exqzore.intacle.model.dao.impl.SubscriberDaoImpl;
 import com.exqzore.intacle.model.entity.User;
 import com.exqzore.intacle.model.service.SubscriberService;
+import com.exqzore.intacle.model.validator.LoginValidator;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,26 +30,101 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public boolean isSubscribe(long subscriberId, long subscriptionId) throws ServiceException {
-        return false;
+        boolean isSubscribe;
+        try {
+            isSubscribe = subscriberDao.isSubscribe(subscriberId, subscriptionId);
+        } catch (DaoException exception) {
+            logger.log(Level.ERROR, exception);
+            throw new ServiceException(exception);
+        }
+        return isSubscribe;
     }
 
     @Override
-    public boolean subscribe(long subscriberId, long subscriptionId) throws ServiceException {
-        return false;
+    public boolean subscribe(String subscriberLogin, String subscriptionLogin) throws ServiceException {
+        boolean isSubscribed;
+        if (LoginValidator.checkLogin(subscriberLogin) && LoginValidator.checkLogin(subscriptionLogin)) {
+            try {
+                isSubscribed = subscriberDao.subscribe(subscriberLogin, subscriptionLogin);
+            } catch (DaoException exception) {
+                logger.log(Level.ERROR, exception);
+                throw new ServiceException(exception);
+            }
+        } else {
+            throw new InvalidParamsException();
+        }
+        return isSubscribed;
     }
 
     @Override
-    public boolean unsubscribe(long subscriberId, long subscriptionId) throws ServiceException {
-        return false;
+    public boolean unsubscribe(String subscriberLogin, String subscriptionLogin) throws ServiceException {
+        boolean isUnsubscribed;
+        if (LoginValidator.checkLogin(subscriberLogin) && LoginValidator.checkLogin(subscriptionLogin)) {
+            try {
+                isUnsubscribed = subscriberDao.unsubscribe(subscriberLogin, subscriptionLogin);
+            } catch (DaoException exception) {
+                logger.log(Level.ERROR, exception);
+                throw new ServiceException(exception);
+            }
+        } else {
+            throw new InvalidParamsException();
+        }
+        return isUnsubscribed;
     }
 
     @Override
-    public List<User> findUserSubscribersByTwenty(long userId, int offset) throws ServiceException {
-        return null;
+    public List<User> findUserSubscribers(String login, int count, int offset) throws ServiceException {
+        List<User> users;
+        if (LoginValidator.checkLogin(login)) {
+            try {
+                users = subscriberDao.findSubscribers(login, count, offset);
+            } catch (DaoException exception) {
+                logger.log(Level.ERROR, exception);
+                throw new ServiceException(exception);
+            }
+        } else {
+            throw new InvalidParamsException();
+        }
+        return users;
     }
 
     @Override
-    public List<User> findUserSubscriptionsByTwenty(long userId, int offset) throws ServiceException {
-        return null;
+    public List<User> findUserSubscriptions(String login, int count, int offset) throws ServiceException {
+        List<User> users;
+        if (LoginValidator.checkLogin(login)) {
+            try {
+                users = subscriberDao.findSubscriptions(login, count, offset);
+            } catch (DaoException exception) {
+                logger.log(Level.ERROR, exception);
+                throw new ServiceException(exception);
+            }
+        } else {
+            throw new InvalidParamsException();
+        }
+        return users;
+    }
+
+    @Override
+    public int findUserSubscribersCount(long userId) throws ServiceException {
+        int count;
+        try {
+            count = subscriberDao.findSubscribersCount(userId);
+        } catch (DaoException exception) {
+            logger.log(Level.ERROR, exception);
+            throw new ServiceException(exception);
+        }
+        return count;
+    }
+
+    @Override
+    public int findUserSubscriptionsCount(long userId) throws ServiceException {
+        int count;
+        try {
+            count = subscriberDao.findSubscriptionsCount(userId);
+        } catch (DaoException exception) {
+            logger.log(Level.ERROR, exception);
+            throw new ServiceException(exception);
+        }
+        return count;
     }
 }

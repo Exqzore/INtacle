@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> userByLogin(String login) throws ServiceException {
+    public Optional<User> findByLogin(String login) throws ServiceException {
         Optional<User> userOptional;
         if(LoginValidator.checkLogin(login)) {
             try {
@@ -127,17 +127,5 @@ public class UserServiceImpl implements UserService {
             throw new InvalidParamsException();
         }
         return userOptional;
-    }
-
-    @Override
-    public boolean isSubscribe(long followerId, long followingId) throws ServiceException {
-        boolean isSubscribe;
-        try {
-            isSubscribe = userDao.isSubscribe(followerId, followingId);
-        } catch (DaoException exception) {
-            logger.log(Level.ERROR, exception);
-            throw new ServiceException(exception);
-        }
-        return isSubscribe;
     }
 }

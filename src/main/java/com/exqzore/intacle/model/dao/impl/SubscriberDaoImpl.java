@@ -27,11 +27,11 @@ public class SubscriberDaoImpl implements SubscriberDao {
             """;
     private final static String USER_SUBSCRIBERS = """
             SELECT u.login, u.avatar_image_path FROM users u LEFT JOIN subscriptions s ON u.id = s.subscriber
-            WHERE s.subscription = ? ORDER BY u.login LIMIT ? OFFSET ?
+            WHERE s.subscription = (SELECT u2.id FROM users u2 WHERE u2.login = ?) ORDER BY u.login LIMIT ? OFFSET ?
             """;
     private final static String USER_SUBSCRIPTIONS = """
             SELECT u.login, u.avatar_image_path FROM users u LEFT JOIN subscriptions s ON u.id = s.subscription
-            WHERE s.subscriber = ? ORDER BY u.login LIMIT ? OFFSET ?
+            WHERE s.subscriber = (SELECT u2.id FROM users u2 WHERE u2.login = ?) ORDER BY u.login LIMIT ? OFFSET ?
             """;
     private final static String USER_SUBSCRIBERS_COUNT = """
             SELECT COUNT(subscription) FROM subscriptions WHERE subscription = ?
@@ -39,8 +39,15 @@ public class SubscriberDaoImpl implements SubscriberDao {
     private final static String USER_SUBSCRIPTIONS_COUNT = """
             SELECT COUNT(subscriber) FROM subscriptions WHERE subscriber = ?
             """;
-    private final static String SUBSCRIBE = "INSERT INTO subscriptions (subscription, subscriber) VALUES (?,?)";
-    private final static String UNSUBSCRIBE = "DELETE FROM subscriptions WHERE subscription = ? AND subscriber = ?";
+    private final static String SUBSCRIBE = """
+            INSERT INTO subscriptions (subscription, subscriber)
+            VALUES ((SELECT u.id FROM users u WHERE u.login = ?),(SELECT u2.id FROM users u2 WHERE u2.login = ?))
+            """;
+    private final static String UNSUBSCRIBE = """
+            DELETE FROM subscriptions 
+            WHERE subscription = (SELECT u.id FROM users u WHERE u.login = ?)
+            AND subscriber = (SELECT u2.id FROM users u2 WHERE u2.login = ?)
+            """;
 
     private SubscriberDaoImpl() {
     }
@@ -71,17 +78,17 @@ public class SubscriberDaoImpl implements SubscriberDao {
     }
 
     @Override
-    public boolean subscribe(long subscriberId, long subscriptionId) throws DaoException {
+    public boolean subscribe(String subscriberLogin, String subscriptionLogin) throws DaoException {
         boolean result;
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(SUBSCRIBE)) {
-            statement.setLong(1, subscriptionId);
-            statement.setLong(2, subscriberId);
+            statement.setString(1, subscriptionLogin);
+            statement.setString(2, subscriberLogin);
             if (statement.executeUpdate() > 0) {
-                logger.log(Level.INFO, "User with id '{}' subscribed to user with id '{}'", subscriberId, subscriptionId);
+                logger.log(Level.INFO, "User '{}' subscribed to user '{}'", subscriberLogin, subscriptionLogin);
                 result = true;
             } else {
-                logger.log(Level.INFO, "User with id '{}' could not subscribe to user with id '{}'", subscriberId, subscriptionId);
+                logger.log(Level.INFO, "User '{}' could not subscribe to user '{}'", subscriberLogin, subscriptionLogin);
                 result = false;
             }
         } catch (SQLException exception) {
@@ -92,17 +99,17 @@ public class SubscriberDaoImpl implements SubscriberDao {
     }
 
     @Override
-    public boolean unsubscribe(long subscriberId, long subscriptionId) throws DaoException {
+    public boolean unsubscribe(String subscriberLogin, String subscriptionLogin) throws DaoException {
         boolean result;
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(UNSUBSCRIBE)) {
-            statement.setLong(1, subscriptionId);
-            statement.setLong(2, subscriberId);
+            statement.setString(1, subscriptionLogin);
+            statement.setString(2, subscriberLogin);
             if (statement.executeUpdate() > 0) {
-                logger.log(Level.INFO, "User with id '{}' unsubscribed to user with id '{}'", subscriberId, subscriptionId);
+                logger.log(Level.INFO, "User '{}' unsubscribed to user '{}'", subscriberLogin, subscriptionLogin);
                 result = true;
             } else {
-                logger.log(Level.INFO, "User with id '{}' could not unsubscribe to user with id '{}'", subscriberId, subscriptionId);
+                logger.log(Level.INFO, "User '{}' could not unsubscribe to user '{}'", subscriberLogin, subscriptionLogin);
                 result = false;
             }
         } catch (SQLException exception) {
@@ -113,11 +120,11 @@ public class SubscriberDaoImpl implements SubscriberDao {
     }
 
     @Override
-    public List<User> findSubscribers(long userId, int count, int offset) throws DaoException {
+    public List<User> findSubscribers(String login, int count, int offset) throws DaoException {
         List<User> result = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(USER_SUBSCRIBERS)) {
-            statement.setLong(1, userId);
+            statement.setString(1, login);
             statement.setInt(2, count);
             statement.setInt(3, offset);
             ResultSet resultSet = statement.executeQuery();
@@ -135,11 +142,11 @@ public class SubscriberDaoImpl implements SubscriberDao {
     }
 
     @Override
-    public List<User> findSubscriptions(long userId, int count, int offset) throws DaoException {
+    public List<User> findSubscriptions(String login, int count, int offset) throws DaoException {
         List<User> result = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(USER_SUBSCRIPTIONS)) {
-            statement.setLong(1, userId);
+            statement.setString(1, login);
             statement.setInt(2, count);
             statement.setInt(3, offset);
             ResultSet resultSet = statement.executeQuery();
@@ -163,8 +170,8 @@ public class SubscriberDaoImpl implements SubscriberDao {
              PreparedStatement statement = connection.prepareStatement(USER_SUBSCRIBERS_COUNT)) {
             statement.setLong(1, userId);
             ResultSet resultSet = statement.executeQuery();
-            if(resultSet.next()) {
-                count =resultSet.getInt(1);
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
             } else {
                 throw new DaoException();
             }
@@ -182,8 +189,8 @@ public class SubscriberDaoImpl implements SubscriberDao {
              PreparedStatement statement = connection.prepareStatement(USER_SUBSCRIPTIONS_COUNT)) {
             statement.setLong(1, userId);
             ResultSet resultSet = statement.executeQuery();
-            if(resultSet.next()) {
-                count =resultSet.getInt(1);
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
             } else {
                 throw new DaoException();
             }

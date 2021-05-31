@@ -15,6 +15,4 @@ public interface UserDao {
     Optional<User> login(String login, String password) throws DaoException;
 
     Optional<User> findByLogin(String login) throws DaoException;
-
-    boolean isSubscribe(long followerId, long followingId) throws DaoException;
 }

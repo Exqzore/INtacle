@@ -28,7 +28,6 @@ public class RegisterCommand implements Command {
     private static final String REPEAT_PASSWORD = "repeat_password";
     private static final String NAME = "name";
     private static final String SURNAME = "surname";
-
     private static final String IS_MESSAGE_SENT_TO_MAIL = "isMessageSentToMail";
     private static final String IS_INVALID_PARAMS = "isInvalidParams";
     private static final String IS_LOGIN_BUSY = "isLoginBusy";
