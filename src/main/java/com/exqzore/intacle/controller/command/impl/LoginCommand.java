@@ -48,11 +48,11 @@ public class LoginCommand implements Command {
                 resultPage = WebPageRequest.GO_LOGIN_PAGE;
             }
         } catch (UserNotActivatedException exception) {
-            logger.log(Level.INFO, exception);
+            logger.log(Level.ERROR, exception);
             session.setAttribute(IS_NOT_ACTIVATED, true);
             resultPage = WebPageRequest.GO_LOGIN_PAGE;
         } catch (InvalidParamsException exception) {
-            logger.log(Level.INFO, exception);
+            logger.log(Level.ERROR, exception);
             session.setAttribute(IS_INVALID_PARAMS, true);
             resultPage = WebPageRequest.GO_LOGIN_PAGE;
         } catch (ServiceException exception) {

@@ -37,6 +37,7 @@ body {
 	list-style-type: none;
 	transition: all .1s;
 	color: rgb(56, 56, 56);
+	height: 37px;
 }
 
 .left__nav-element a {

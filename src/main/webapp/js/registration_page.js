@@ -36,11 +36,6 @@ function toRegister(form) {
         elemLoginLabel.classList.add('error-label')
         result = false
     }
-    if (elemEmail.value === '') {
-        elemEmail.classList.add('error-input')
-        elemEmailLabel.classList.add('error-label')
-        result = false
-    }
     if (result) {
         form.submit()
     }

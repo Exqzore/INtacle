@@ -103,28 +103,4 @@ public class SubscriberServiceImpl implements SubscriberService {
         }
         return users;
     }
-
-    @Override
-    public int findUserSubscribersCount(long userId) throws ServiceException {
-        int count;
-        try {
-            count = subscriberDao.findSubscribersCount(userId);
-        } catch (DaoException exception) {
-            logger.log(Level.ERROR, exception);
-            throw new ServiceException(exception);
-        }
-        return count;
-    }
-
-    @Override
-    public int findUserSubscriptionsCount(long userId) throws ServiceException {
-        int count;
-        try {
-            count = subscriberDao.findSubscriptionsCount(userId);
-        } catch (DaoException exception) {
-            logger.log(Level.ERROR, exception);
-            throw new ServiceException(exception);
-        }
-        return count;
-    }
 }

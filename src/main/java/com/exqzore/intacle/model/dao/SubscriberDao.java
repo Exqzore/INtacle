@@ -15,8 +15,4 @@ public interface SubscriberDao {
     List<User> findSubscribers(String login, int count, int offset) throws DaoException;
 
     List<User> findSubscriptions(String login, int count, int offset) throws DaoException;
-
-    int findSubscribersCount(long userId) throws DaoException;
-
-    int findSubscriptionsCount(long userId) throws DaoException;
 }

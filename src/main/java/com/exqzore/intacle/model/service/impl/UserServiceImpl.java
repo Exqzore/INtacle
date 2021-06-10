@@ -119,6 +119,14 @@ public class UserServiceImpl implements UserService {
         if(LoginValidator.checkLogin(login)) {
             try {
                 userOptional = userDao.findByLogin(login);
+                if (userOptional.isPresent()) {
+                    User user = userOptional.get();
+                    if (user.getActivationCode() != null) {
+                        throw new UserNotActivatedException();
+                    }
+                } else {
+                    throw new InvalidParamsException();
+                }
             } catch (DaoException exception) {
                 logger.log(Level.ERROR, exception);
                 throw new ServiceException(exception);

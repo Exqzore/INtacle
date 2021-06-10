@@ -125,6 +125,8 @@
     max-height: 40px;
     padding-left: 8px;
     color: #000;
+    min-width: 120px;
+    max-width: 120px;
 }
 
 .profile-arrow__menu-elem:hover {

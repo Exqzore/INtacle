@@ -2,18 +2,14 @@ package com.exqzore.intacle.model.entity;
 
 public class Chat {
     private long id;
-    private String title;
+    private User recipient;
 
     public Chat() {
     }
 
-    public Chat(long id) {
+    public Chat(long id, User recipient) {
         this.id = id;
-    }
-
-    public Chat(long id, String title) {
-        this.id = id;
-        this.title = title;
+        this.recipient = recipient;
     }
 
     public long getId() {
@@ -24,12 +20,12 @@ public class Chat {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public User getRecipient() {
+        return recipient;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setRecipient(User recipient) {
+        this.recipient = recipient;
     }
 
     @Override
@@ -53,7 +49,7 @@ public class Chat {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Chat{");
         sb.append("id=").append(id);
-        sb.append(", title='").append(title).append('\'');
+        sb.append(", recipient=").append(recipient);
         sb.append('}');
         return sb.toString();
     }

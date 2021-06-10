@@ -38,8 +38,6 @@ public class ShowProfileCommand implements Command {
             boolean canEdit = login.equals(user.getLogin());
             try {
                 if (canEdit) {
-                    user.setSubscriptionsCount(subscriberService.findUserSubscriptionsCount(user.getId()));
-                    user.setSubscribersCount(subscriberService.findUserSubscribersCount(user.getId()));
                     session.setAttribute(CAN_EDIT, true);
                     session.setAttribute(REQUESTED_USER, user);
                     pagePath = WebPagePath.PROFILE_PAGE;
@@ -47,8 +45,6 @@ public class ShowProfileCommand implements Command {
                     Optional<User> userOptional = userService.findByLogin(login);
                     if (userOptional.isPresent()) {
                         User requestUser = userOptional.get();
-                        requestUser.setSubscriptionsCount(subscriberService.findUserSubscriptionsCount(requestUser.getId()));
-                        requestUser.setSubscribersCount(subscriberService.findUserSubscribersCount(requestUser.getId()));
                         session.setAttribute(CAN_EDIT, false);
                         session.setAttribute(REQUESTED_USER, requestUser);
                         session.setAttribute(IS_SUBSCRIBE, subscriberService.isSubscribe(user.getId(), requestUser.getId()));

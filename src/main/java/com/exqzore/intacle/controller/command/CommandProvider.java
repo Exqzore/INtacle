@@ -1,6 +1,9 @@
 package com.exqzore.intacle.controller.command;
 
 import com.exqzore.intacle.controller.command.impl.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
@@ -20,7 +23,11 @@ public enum CommandProvider implements Command{
     SUBSCRIBE(new SubscribeCommand()),
     UNSUBSCRIBE(new UnsubscribeCommand()),
     SHOW_SUBSCRIBERS(new ShowSubscribersCommand()),
-    SHOW_SUBSCRIPTIONS(new ShowSubscriptionsCommand());
+    CHANGE_LANGUAGE(new ChangeLanguageCommand()),
+    SHOW_SUBSCRIPTIONS(new ShowSubscriptionsCommand()),
+    SHOW_MESSENGER(new ShowMessengerCommand());
+
+    private static final Logger logger = LogManager.getLogger();
 
     Command command;
 
@@ -30,13 +37,17 @@ public enum CommandProvider implements Command{
 
     public static Optional<Command> defineCommand(String commandName) {
         if (commandName == null || commandName.isBlank()) {
+            logger.log(Level.INFO, "1");
             return Optional.empty();
         }
         commandName = commandName.toUpperCase(Locale.ROOT);
         Optional<Command> optionalCommand;
         try {
+            logger.log(Level.INFO, "2");
             optionalCommand = Optional.of(CommandProvider.valueOf(commandName));
+            logger.log(Level.INFO, "3");
         } catch (IllegalArgumentException exception) {
+            logger.log(Level.INFO, "4");
             optionalCommand = Optional.empty();
         }
         return optionalCommand;

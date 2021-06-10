@@ -27,28 +27,23 @@
     <%@ include file="left_section.jsp" %>
     <div class="right__page-layout">
         <div class="main-container">
-            <div class="title-text"><fmt:message key="subscriptions.title"/></div>
+            <div class="title-text"><fmt:message key="messenger.title"/></div>
             <div class="decoration-text"></div>
             <c:choose>
-                <c:when test="${users.size() == 0}">
-                    <div class="if-is-empty-text"><fmt:message key="subscriptions.empty"/></div>
+                <c:when test="${chats.size() == 0}">
+                    <div class="if-is-empty-text"><fmt:message key="messenger.empty"/></div>
                 </c:when>
                 <c:otherwise>
-                    <c:forEach items="${users}" var="subscription">
+                    <c:forEach items="${chats}" var="chat">
                         <div class="user-elem__container">
-                            <a href="${pageContext.request.contextPath}/main?command=show_profile&login=${subscription.login}"
-                               class="user-elem__page">
-                                <img class="user-elem__profile-image" src="image/avatar/${subscription.avatarPath}"
+                            <a id="chat-${chat.id}" href="#" class="user-elem__page">
+<%--                            <a href="${pageContext.request.contextPath}/main?command=show_profile&login=${chat.user.login}"--%>
+<%--                               class="user-elem__page">--%>
+                                <img class="user-elem__profile-image" src="image/avatar/${chat.user.avatarPath}"
                                      alt="User avatar" width="70" height="70"/>
-                                <div class="user-elem__login">${subscription.login}</div>
+                                <div class="user-elem__login">${chat.user.login}</div>
                             </a>
-                            <div class="user-elem__chat-link">
-                                <c:choose>
-                                    <c:when test="${!subscription.login.equals(user.login)}">
-                                        <a href="#" class="chat-link"><fmt:message key="subscriptions.message"/></a>
-                                    </c:when>
-                                </c:choose>
-                            </div>
+                            <div class="user-elem__chat-link"></div>
                         </div>
                     </c:forEach>
                 </c:otherwise>

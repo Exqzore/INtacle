@@ -15,8 +15,4 @@ public interface SubscriberService {
     List<User> findUserSubscribers(String login, int count, int offset) throws ServiceException;
 
     List<User> findUserSubscriptions(String login, int count, int offset) throws ServiceException;
-
-    int findUserSubscribersCount(long userId) throws ServiceException;
-
-    int findUserSubscriptionsCount(long userId) throws ServiceException;
 }

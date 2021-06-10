@@ -33,18 +33,12 @@ public class SubscriberDaoImpl implements SubscriberDao {
             SELECT u.login, u.avatar_image_path FROM users u LEFT JOIN subscriptions s ON u.id = s.subscription
             WHERE s.subscriber = (SELECT u2.id FROM users u2 WHERE u2.login = ?) ORDER BY u.login LIMIT ? OFFSET ?
             """;
-    private final static String USER_SUBSCRIBERS_COUNT = """
-            SELECT COUNT(subscription) FROM subscriptions WHERE subscription = ?
-            """;
-    private final static String USER_SUBSCRIPTIONS_COUNT = """
-            SELECT COUNT(subscriber) FROM subscriptions WHERE subscriber = ?
-            """;
     private final static String SUBSCRIBE = """
             INSERT INTO subscriptions (subscription, subscriber)
             VALUES ((SELECT u.id FROM users u WHERE u.login = ?),(SELECT u2.id FROM users u2 WHERE u2.login = ?))
             """;
     private final static String UNSUBSCRIBE = """
-            DELETE FROM subscriptions 
+            DELETE FROM subscriptions
             WHERE subscription = (SELECT u.id FROM users u WHERE u.login = ?)
             AND subscriber = (SELECT u2.id FROM users u2 WHERE u2.login = ?)
             """;
@@ -121,7 +115,7 @@ public class SubscriberDaoImpl implements SubscriberDao {
 
     @Override
     public List<User> findSubscribers(String login, int count, int offset) throws DaoException {
-        List<User> result = new ArrayList<>();
+        List<User> subscribers = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(USER_SUBSCRIBERS)) {
             statement.setString(1, login);
@@ -132,18 +126,18 @@ public class SubscriberDaoImpl implements SubscriberDao {
                 User user = new User();
                 user.setLogin(resultSet.getString(1));
                 user.setAvatarPath(resultSet.getString(2));
-                result.add(user);
+                subscribers.add(user);
             }
         } catch (SQLException exception) {
             logger.log(Level.ERROR, "Find user subscribers error", exception);
             throw new DaoException(exception);
         }
-        return result;
+        return subscribers;
     }
 
     @Override
     public List<User> findSubscriptions(String login, int count, int offset) throws DaoException {
-        List<User> result = new ArrayList<>();
+        List<User> subscriptions = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(USER_SUBSCRIPTIONS)) {
             statement.setString(1, login);
@@ -154,50 +148,12 @@ public class SubscriberDaoImpl implements SubscriberDao {
                 User user = new User();
                 user.setLogin(resultSet.getString(1));
                 user.setAvatarPath(resultSet.getString(2));
-                result.add(user);
+                subscriptions.add(user);
             }
         } catch (SQLException exception) {
             logger.log(Level.ERROR, "Find user subscriptions error", exception);
             throw new DaoException(exception);
         }
-        return result;
-    }
-
-    @Override
-    public int findSubscribersCount(long userId) throws DaoException {
-        int count;
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(USER_SUBSCRIBERS_COUNT)) {
-            statement.setLong(1, userId);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                count = resultSet.getInt(1);
-            } else {
-                throw new DaoException();
-            }
-        } catch (SQLException exception) {
-            logger.log(Level.ERROR, "Find user subscribers count error", exception);
-            throw new DaoException(exception);
-        }
-        return count;
-    }
-
-    @Override
-    public int findSubscriptionsCount(long userId) throws DaoException {
-        int count;
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(USER_SUBSCRIPTIONS_COUNT)) {
-            statement.setLong(1, userId);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                count = resultSet.getInt(1);
-            } else {
-                throw new DaoException();
-            }
-        } catch (SQLException exception) {
-            logger.log(Level.ERROR, "Find user subscriptions count error", exception);
-            throw new DaoException(exception);
-        }
-        return count;
+        return subscriptions;
     }
 }

@@ -26,8 +26,11 @@ public class UserDaoImpl implements UserDao {
             VALUES (?,?,?,?,?,?,?,?)
             """;
     private final static String USER_BY_LOGIN_AND_PASSWORD = """
-            SELECT id, email, name, surname, avatar_image_path, user_level FROM users
-            WHERE login = ? AND password = ? AND activation_code IS NULL
+            SELECT u.id, u.email, u.name, u.surname, u.avatar_image_path, u.user_level, u.activation_code,
+            COUNT(s.subscriber), (SELECT COUNT(s2.subscription) FROM subscriptions s2 WHERE s2.subscriber = u.id)
+            FROM users u
+            LEFT JOIN subscriptions s ON u.id = s.subscription
+            WHERE u.login = ? AND u.password = ?
             """;
     private final static String LOGIN_WITH_ACTIVATION_CODE_EXISTS = """
             SELECT COUNT(login) FROM users WHERE login = ? AND activation_code = ?
@@ -36,8 +39,11 @@ public class UserDaoImpl implements UserDao {
             UPDATE users SET activation_code = NULL WHERE login = ? AND activation_code = ?
             """;
     private final static String FIND_BY_LOGIN = """
-            SELECT id, email, name, surname, avatar_image_path, user_level FROM users
-            WHERE login = ? AND activation_code IS NULL
+            SELECT u.id, u.email, u.name, u.surname, u.avatar_image_path, u.user_level, u.activation_code,
+            COUNT(s.subscriber), (SELECT COUNT(s2.subscription) FROM subscriptions s2 WHERE s2.subscriber = u.id)
+            FROM users u
+            LEFT JOIN subscriptions s ON u.id = s.subscription
+            WHERE u.login = ?
             """;
     private final static String LOGIN_EXISTS = "SELECT COUNT(login) FROM users WHERE login = ?";
 
@@ -111,6 +117,9 @@ public class UserDaoImpl implements UserDao {
                 user.setSurname(resultSet.getString(4));
                 user.setAvatarPath(resultSet.getString(5));
                 user.setLevel(resultSet.getString(6));
+                user.setActivationCode(resultSet.getString(7));
+                user.setSubscribersCount(resultSet.getInt(8));
+                user.setSubscriptionsCount(resultSet.getInt(9));
                 optionalUser = Optional.of(user);
                 logger.log(Level.INFO, "User with login '{}' found successfully", login);
             } else {
@@ -166,6 +175,9 @@ public class UserDaoImpl implements UserDao {
                 user.setSurname(resultSet.getString(4));
                 user.setAvatarPath(resultSet.getString(5));
                 user.setLevel(resultSet.getString(6));
+                user.setActivationCode(resultSet.getString(7));
+                user.setSubscribersCount(resultSet.getInt(8));
+                user.setSubscriptionsCount(resultSet.getInt(9));
                 optionalUser = Optional.of(user);
                 logger.log(Level.INFO, "User with login '{}' successfully authenticated", login);
             } else {
