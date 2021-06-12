@@ -31,7 +31,7 @@ public class ChatDaoImpl implements ChatDao {
             """;
 
     private final static String USER_CHATS = """
-            SELECT t.id, u.login, u.avatar_image_path FROM (SELECT c2.id, cm2.user FROM chats c2
+            SELECT t.id, u.id, u.login, u.avatar_image_path FROM (SELECT c2.id, cm2.user FROM chats c2
             LEFT JOIN chat_membership cm2 on c2.id = cm2.chat
             WHERE c2.id IN (SELECT c.id FROM chats c LEFT JOIN chat_membership cm ON c.id = cm.chat WHERE cm.user = ?)) t
             LEFT JOIN users u ON t.user = u.id
@@ -81,7 +81,6 @@ public class ChatDaoImpl implements ChatDao {
             if (resultSet.next()) {
                 Chat chat = new Chat();
                 chat.setId(resultSet.getLong(1));
-                chat.setId(resultSet.getLong(1));
                 optionalChat = Optional.of(chat);
                 logger.log(Level.INFO, "Chat with ids '{}' and '{}' found successfully", firstUserId, secondUserId);
             } else {
@@ -106,10 +105,9 @@ public class ChatDaoImpl implements ChatDao {
             while (resultSet.next()) {
                 Chat chat = new Chat();
                 chat.setId(resultSet.getLong(1));
-                User recipient = new User();
-                recipient.setLogin(resultSet.getString(2));
-                recipient.setAvatarPath(resultSet.getString(3));
-                chat.setRecipient(recipient);
+                chat.setRecipientId(resultSet.getLong(2));
+                chat.setRecipientLogin(resultSet.getString(3));
+                chat.setRecipientAvatarPath(resultSet.getString(4));
                 chats.add(chat);
             }
         } catch (SQLException exception) {

@@ -36,12 +36,11 @@
                 <c:otherwise>
                     <c:forEach items="${chats}" var="chat">
                         <div class="user-elem__container">
-                            <a id="chat-${chat.id}" href="#" class="user-elem__page">
-<%--                            <a href="${pageContext.request.contextPath}/main?command=show_profile&login=${chat.user.login}"--%>
-<%--                               class="user-elem__page">--%>
-                                <img class="user-elem__profile-image" src="image/avatar/${chat.user.avatarPath}"
+                            <a href="${pageContext.request.contextPath}/main?command=show_chat&chat=${chat.id}"
+                                id="chat-${chat.id}" class="user-elem__page">
+                                <img class="user-elem__profile-image" src="image/avatar/${chat.recipientAvatarPath}"
                                      alt="User avatar" width="70" height="70"/>
-                                <div class="user-elem__login">${chat.user.login}</div>
+                                <div class="user-elem__login">${chat.recipientLogin}</div>
                             </a>
                             <div class="user-elem__chat-link"></div>
                         </div>

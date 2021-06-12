@@ -18,6 +18,7 @@
 	flex: 0 0 880px;
 	min-width: 880px;
 	max-width: 880px;
+	flex-direction: column;
 }
 
 .empty__page-layout {

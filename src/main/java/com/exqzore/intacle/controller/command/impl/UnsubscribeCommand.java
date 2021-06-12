@@ -28,27 +28,23 @@ public class UnsubscribeCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest request) { //TODO: add normal error page
-        String json;
+        String resultJson;
         String subscriptionLogin = request.getParameter(LOGIN);
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(USER);
-        if (user != null) {
-            String subscriberLogin = user.getLogin();
-            try {
-                if (subscriberService.unsubscribe(subscriberLogin, subscriptionLogin)) {
-                    json = createJson(Status.SUCCESS);
+        String subscriberLogin = user.getLogin();
+        try {
+            if (subscriberService.unsubscribe(subscriberLogin, subscriptionLogin)) {
+                resultJson = createJson(Status.SUCCESS);
 //                    pagePath = WebPagePath.EMPTY_PAGE; //TODO: something wrong
-                } else {
-                    json = createJson(Status.ERROR);
-                }
-            } catch (ServiceException exception) {
-                logger.log(Level.ERROR, exception);
-                json = createJson(Status.ERROR);
+            } else {
+                resultJson = createJson(Status.ERROR);
             }
-        } else {
-            json = createJson(Status.ERROR);
+        } catch (ServiceException exception) {
+            logger.log(Level.ERROR, exception);
+            resultJson = createJson(Status.ERROR);
         }
-        return json;
+        return resultJson;
     }
 
     private String createJson(Status status) {

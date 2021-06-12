@@ -2,15 +2,20 @@ package com.exqzore.intacle.model.entity;
 
 public class Chat {
     private long id;
-    private User recipient;
+    private long recipientId;
+    private String recipientLogin;
+    private String recipientAvatarPath;
 
     public Chat() {
     }
 
-    public Chat(long id, User recipient) {
+    public Chat(long id, long recipientId, String recipientLogin, String recipientAvatarPath) {
         this.id = id;
-        this.recipient = recipient;
+        this.recipientId = recipientId;
+        this.recipientLogin = recipientLogin;
+        this.recipientAvatarPath = recipientAvatarPath;
     }
+
 
     public long getId() {
         return id;
@@ -20,12 +25,28 @@ public class Chat {
         this.id = id;
     }
 
-    public User getRecipient() {
-        return recipient;
+    public long getRecipientId() {
+        return recipientId;
     }
 
-    public void setRecipient(User recipient) {
-        this.recipient = recipient;
+    public void setRecipientId(long recipientId) {
+        this.recipientId = recipientId;
+    }
+
+    public String getRecipientLogin() {
+        return recipientLogin;
+    }
+
+    public void setRecipientLogin(String recipientLogin) {
+        this.recipientLogin = recipientLogin;
+    }
+
+    public String getRecipientAvatarPath() {
+        return recipientAvatarPath;
+    }
+
+    public void setRecipientAvatarPath(String recipientAvatarPath) {
+        this.recipientAvatarPath = recipientAvatarPath;
     }
 
     @Override
@@ -49,7 +70,9 @@ public class Chat {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Chat{");
         sb.append("id=").append(id);
-        sb.append(", recipient=").append(recipient);
+        sb.append(", recipientId=").append(recipientId);
+        sb.append(", recipientLogin='").append(recipientLogin).append('\'');
+        sb.append(", recipientAvatarPath='").append(recipientAvatarPath).append('\'');
         sb.append('}');
         return sb.toString();
     }
