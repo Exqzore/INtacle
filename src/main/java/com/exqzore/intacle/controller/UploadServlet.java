@@ -1,10 +1,10 @@
 package com.exqzore.intacle.controller;
 
 import com.exqzore.intacle.exception.ServiceException;
-import com.exqzore.intacle.model.entity.User;
-import com.exqzore.intacle.model.service.FileService;
-import com.exqzore.intacle.model.service.impl.FileServiceImpl;
-import com.exqzore.intacle.util.FileName;
+import com.exqzore.intacle.entity.User;
+import com.exqzore.intacle.service.FileService;
+import com.exqzore.intacle.service.impl.FileServiceImpl;
+import com.exqzore.intacle.service.util.FileName;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;

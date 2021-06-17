@@ -34,7 +34,8 @@
                         <div class="user-elem__container">
                             <a href="${pageContext.request.contextPath}/main?command=show_profile&login=${subscription.login}"
                                class="user-elem__page">
-                                <img class="user-elem__profile-image" src="image/avatar/${subscription.avatarImagePath}"
+                                <img class="user-elem__profile-image"
+                                     src="${pageContext.request.contextPath}/main?command=take_file&file_name=${subscription.avatarImagePath}"
                                      alt="User avatar" width="70" height="70"/>
                                 <div class="user-elem__login">${subscription.login}</div>
                             </a>

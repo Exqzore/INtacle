@@ -1,6 +1,6 @@
 package com.exqzore.intacle.controller.command;
 
-import com.exqzore.intacle.model.entity.UserRole;
+import com.exqzore.intacle.entity.UserRole;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

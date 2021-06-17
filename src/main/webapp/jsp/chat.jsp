@@ -39,13 +39,15 @@
                                     </div>
                                         ${message.content}
                                 </div>
-                                <img class="message-image" src="image/avatar/${message.author.avatarImagePath}"
+                                <img class="message-image"
+                                     src="${pageContext.request.contextPath}/main?command=take_file&file_name=${message.author.avatarImagePath}"
                                      alt="User avatar" width="44" height="44"/>
                             </div>
                         </c:when>
                         <c:otherwise>
                             <div class="row row-left">
-                                <img class="message-image" src="image/avatar/${message.author.avatarImagePath}"
+                                <img class="message-image"
+                                     src="${pageContext.request.contextPath}/main?command=take_file&file_name=${message.author.avatarImagePath}"
                                      alt="User avatar" width="44" height="44"/>
                                 <div class="chat-bubble chat-bubble__left">
                                     <div class="message-title">

@@ -34,7 +34,8 @@
                         <a href="${pageContext.request.contextPath}/main?command=show_chat&chat=${chat.id}"
                            class="user-elem__container">
                             <div id="chat-${chat.id}" class="user-elem__page">
-                                <img class="user-elem__profile-image" src="image/avatar/${chat.recipient.avatarImagePath}"
+                                <img class="user-elem__profile-image"
+                                     src="${pageContext.request.contextPath}/main?command=take_file&file_name=${chat.recipient.avatarImagePath}"
                                      alt="User avatar" width="70" height="70"/>
                                 <div>${chat.recipient.login}</div>
                             </div>

@@ -35,7 +35,7 @@
                             <a href="${pageContext.request.contextPath}/main?command=show_profile&login=${subscriber.login}"
                                class="user-elem__page">
                                 <img class="user-elem__profile-image" alt="User avatar" width="70" height="70"
-                                     src="${pageContext.request.contextPath}/image/avatar/${subscriber.avatarImagePath}"/>
+                                     src="${pageContext.request.contextPath}/main?command=take_file&file_name=${subscriber.avatarImagePath}"/>
                                 <div class="user-elem__login">${subscriber.login}</div>
                             </a>
                             <div class="user-elem__chat-link">

@@ -40,7 +40,8 @@
                 <c:when test="${user != null}">
                     <span class="profile-name profile-wrapper__checked">${user.login}</span>
                     <img class="profile-image profile-wrapper__checked" width="48" height="48"
-                         src="${pageContext.request.contextPath}/image/avatar/${user.avatarImagePath}" alt="User avatar"/>
+                         src="${pageContext.request.contextPath}/main?command=take_file&file_name=${user.avatarImagePath}"
+                         alt="User avatar"/>
                 </c:when>
                 <c:otherwise>
                     <span class="profile-name profile-wrapper__checked"><fmt:message key="header.menu"/></span>

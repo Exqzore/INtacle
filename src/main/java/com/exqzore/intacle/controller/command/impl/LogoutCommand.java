@@ -2,7 +2,7 @@ package com.exqzore.intacle.controller.command.impl;
 
 import com.exqzore.intacle.controller.WebPagePath;
 import com.exqzore.intacle.controller.command.Command;
-import com.exqzore.intacle.model.entity.UserRole;
+import com.exqzore.intacle.entity.UserRole;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
