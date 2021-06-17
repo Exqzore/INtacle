@@ -193,3 +193,14 @@
     font-size: 26px;
     font-weight: 600;
 }
+
+.admin-panel {
+    background: #fff;
+}
+
+.admin-panel:hover {
+    background: #f5f6f8;
+    border-left: 3px solid #56d8e4;
+    padding-left: 5px;
+    cursor: pointer;
+}

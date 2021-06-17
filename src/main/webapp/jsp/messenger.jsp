@@ -12,15 +12,11 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/top-line_style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/body-page_style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/left-navbar_style.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/subscriptions-page_style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/messenger_style.css">
     <script src="https://kit.fontawesome.com/f5dea48adc.js" crossorigin="anonymous"></script>
 </head>
-<c:choose>
-<c:when test="${requestUser != null}">
-<body onload="loadPage('${locale}', '${requestUser.login}')"></c:when>
-<c:otherwise>
-<body onload="loadPage('${locale}')"></c:otherwise>
-</c:choose>
+
+<body>
 <%@ include file="header.jsp" %>
 <div class="page-layout">
     <div class="empty__page-layout"></div>
@@ -35,15 +31,14 @@
                 </c:when>
                 <c:otherwise>
                     <c:forEach items="${chats}" var="chat">
-                        <div class="user-elem__container">
-                            <a href="${pageContext.request.contextPath}/main?command=show_chat&chat=${chat.id}"
-                                id="chat-${chat.id}" class="user-elem__page">
-                                <img class="user-elem__profile-image" src="image/avatar/${chat.recipientAvatarPath}"
+                        <a href="${pageContext.request.contextPath}/main?command=show_chat&chat=${chat.id}"
+                           class="user-elem__container">
+                            <div id="chat-${chat.id}" class="user-elem__page">
+                                <img class="user-elem__profile-image" src="image/avatar/${chat.recipient.avatarImagePath}"
                                      alt="User avatar" width="70" height="70"/>
-                                <div class="user-elem__login">${chat.recipientLogin}</div>
-                            </a>
-                            <div class="user-elem__chat-link"></div>
-                        </div>
+                                <div>${chat.recipient.login}</div>
+                            </div>
+                        </a>
                     </c:forEach>
                 </c:otherwise>
             </c:choose>

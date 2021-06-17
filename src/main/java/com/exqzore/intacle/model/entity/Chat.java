@@ -1,21 +1,18 @@
 package com.exqzore.intacle.model.entity;
 
-public class Chat {
+import java.io.Serializable;
+
+public class Chat implements Serializable {
     private long id;
-    private long recipientId;
-    private String recipientLogin;
-    private String recipientAvatarPath;
+    private User recipient;
 
     public Chat() {
     }
 
-    public Chat(long id, long recipientId, String recipientLogin, String recipientAvatarPath) {
+    public Chat(long id, User recipient) {
         this.id = id;
-        this.recipientId = recipientId;
-        this.recipientLogin = recipientLogin;
-        this.recipientAvatarPath = recipientAvatarPath;
+        this.recipient = recipient;
     }
-
 
     public long getId() {
         return id;
@@ -25,28 +22,12 @@ public class Chat {
         this.id = id;
     }
 
-    public long getRecipientId() {
-        return recipientId;
+    public User getRecipient() {
+        return recipient;
     }
 
-    public void setRecipientId(long recipientId) {
-        this.recipientId = recipientId;
-    }
-
-    public String getRecipientLogin() {
-        return recipientLogin;
-    }
-
-    public void setRecipientLogin(String recipientLogin) {
-        this.recipientLogin = recipientLogin;
-    }
-
-    public String getRecipientAvatarPath() {
-        return recipientAvatarPath;
-    }
-
-    public void setRecipientAvatarPath(String recipientAvatarPath) {
-        this.recipientAvatarPath = recipientAvatarPath;
+    public void setRecipient(User recipient) {
+        this.recipient = recipient;
     }
 
     @Override
@@ -70,9 +51,7 @@ public class Chat {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Chat{");
         sb.append("id=").append(id);
-        sb.append(", recipientId=").append(recipientId);
-        sb.append(", recipientLogin='").append(recipientLogin).append('\'');
-        sb.append(", recipientAvatarPath='").append(recipientAvatarPath).append('\'');
+        sb.append(", recipient=").append(recipient);
         sb.append('}');
         return sb.toString();
     }

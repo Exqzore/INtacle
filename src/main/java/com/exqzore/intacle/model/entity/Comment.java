@@ -1,31 +1,31 @@
 package com.exqzore.intacle.model.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Comment {
+public class Comment implements Serializable {
     private long id;
     private String content;
-    private int likesCount;
     private Date creationDate;
-    private String authorLogin;
-    private String authorAvatarPath;
-    private boolean liked;
+    private Date updateDate;
+    private Entry entry;
+    private User author;
+    private int likesCount;
+    private boolean isLiked;
 
     public Comment() {
     }
 
-    public Comment(long id) {
-        this.id = id;
-    }
-
-    public Comment(long id, String content, int likesCount, Date creationDate, String authorLogin, String authorAvatarPath, boolean liked) {
+    public Comment(long id, String content, Date creationDate, Date updateDate, Entry entry, User author,
+                   int likesCount, boolean isLiked) {
         this.id = id;
         this.content = content;
-        this.likesCount = likesCount;
         this.creationDate = creationDate;
-        this.authorLogin = authorLogin;
-        this.authorAvatarPath = authorAvatarPath;
-        this.liked = liked;
+        this.updateDate = updateDate;
+        this.entry = entry;
+        this.author = author;
+        this.likesCount = likesCount;
+        this.isLiked = isLiked;
     }
 
     public long getId() {
@@ -44,14 +44,6 @@ public class Comment {
         this.content = content;
     }
 
-    public int getLikesCount() {
-        return likesCount;
-    }
-
-    public void setLikesCount(int likesCount) {
-        this.likesCount = likesCount;
-    }
-
     public Date getCreationDate() {
         return creationDate;
     }
@@ -60,28 +52,45 @@ public class Comment {
         this.creationDate = creationDate;
     }
 
-    public String getAuthorLogin() {
-        return authorLogin;
+    public Date getUpdateDate() {
+        return updateDate;
     }
 
-    public void setAuthorLogin(String authorLogin) {
-        this.authorLogin = authorLogin;
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
-    public String getAuthorAvatarPath() {
-        return authorAvatarPath;
+
+    public Entry getEntry() {
+        return entry;
     }
 
-    public void setAuthorAvatarPath(String authorAvatarPath) {
-        this.authorAvatarPath = authorAvatarPath;
+    public void setEntry(Entry entry) {
+        this.entry = entry;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public int getLikesCount() {
+        return likesCount;
+    }
+
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
     }
 
     public boolean isLiked() {
-        return liked;
+        return isLiked;
     }
 
     public void setLiked(boolean liked) {
-        this.liked = liked;
+        isLiked = liked;
     }
 
     @Override
@@ -106,11 +115,12 @@ public class Comment {
         final StringBuilder sb = new StringBuilder("Comment{");
         sb.append("id=").append(id);
         sb.append(", content='").append(content).append('\'');
-        sb.append(", likesCount=").append(likesCount);
         sb.append(", creationDate=").append(creationDate);
-        sb.append(", authorLogin='").append(authorLogin).append('\'');
-        sb.append(", authorAvatarPath='").append(authorAvatarPath).append('\'');
-        sb.append(", liked=").append(liked);
+        sb.append(", updateDate=").append(updateDate);
+        sb.append(", entry=").append(entry);
+        sb.append(", author=").append(author);
+        sb.append(", likesCount=").append(likesCount);
+        sb.append(", isLiked=").append(isLiked);
         sb.append('}');
         return sb.toString();
     }

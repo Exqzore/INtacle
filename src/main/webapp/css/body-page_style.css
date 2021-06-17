@@ -26,3 +26,8 @@
 	flex: 1 0 0;
 	min-width: 4px;
 }
+
+.empty-top {
+	width: 100%;
+	flex: 0 0 71px;
+}

@@ -12,7 +12,7 @@ public interface SubscriberDao {
 
     boolean unsubscribe(String subscriberLogin, String subscriptionLogin) throws DaoException;
 
-    List<User> findSubscribers(String login, int count, int offset) throws DaoException;
+    List<User> findUserSubscribers(String login) throws DaoException;
 
-    List<User> findSubscriptions(String login, int count, int offset) throws DaoException;
+    List<User> findUserSubscriptions(String login) throws DaoException;
 }

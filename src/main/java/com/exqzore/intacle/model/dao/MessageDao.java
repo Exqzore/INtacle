@@ -10,9 +10,9 @@ public interface MessageDao {
 
     boolean update(Message message) throws DaoException;
 
-    boolean defineOdl(long chatId, long senderId) throws DaoException;
+    void defineOdl(long chatId, long senderId) throws DaoException;
 
     List<Message> findByChatId(long chatId) throws DaoException;
 
-    List<Message> findNewSenderByChatId(long chatId, long senderId) throws DaoException;
+    List<Message> findNewNotSenderByChatId(long chatId, long senderId) throws DaoException;
 }

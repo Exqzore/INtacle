@@ -5,10 +5,7 @@ public class Validator {
     }
 
     public static boolean checkLogIn(String login, String password) {
-        boolean result = true;
-        if (login != null && !LoginValidator.checkLogin(login)) {
-            result = false;
-        }
+        boolean result = login == null || LoginValidator.checkLogin(login);
         if (password != null && !PasswordValidator.checkPassword(password)) {
             result = false;
         }
@@ -16,10 +13,7 @@ public class Validator {
     }
 
     public static boolean checkActivateUser(String login, String activationCode) {
-        boolean result = true;
-        if (login != null && !LoginValidator.checkLogin(login)) {
-            result = false;
-        }
+        boolean result = login == null || LoginValidator.checkLogin(login);
         if (activationCode != null && !ActivationCodeValidator.checkActivationCode(activationCode)) {
             result = false;
         }
@@ -27,10 +21,7 @@ public class Validator {
     }
 
     public static boolean checkRegistration(String login, String email, String password, String repeatPassword, String name, String surname) {
-        boolean result = true;
-        if (login != null && !LoginValidator.checkLogin(login)) {
-            result = false;
-        }
+        boolean result = login == null || LoginValidator.checkLogin(login);
         if (email != null && !EmailValidator.checkEmail(email)) {
             result = false;
         }
@@ -43,6 +34,17 @@ public class Validator {
         if (repeatPassword != null && !repeatPassword.equals(password)) {
             result = false;
         }
+        if (name != null && !name.isEmpty() && !NameValidator.checkName(name)) {
+            result = false;
+        }
+        if (surname != null && !surname.isEmpty() && !NameValidator.checkName(surname)) {
+            result = false;
+        }
+        return result;
+    }
+
+    public static boolean checkEdit(String name, String surname) {
+        boolean result = true;
         if (name != null && !name.isEmpty() && !NameValidator.checkName(name)) {
             result = false;
         }

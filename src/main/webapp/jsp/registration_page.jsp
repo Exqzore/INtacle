@@ -10,12 +10,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/registration-page_style.css">
     <script src="https://kit.fontawesome.com/f5dea48adc.js" crossorigin="anonymous"></script>
 </head>
-<c:choose>
-<c:when test="${requestUser != null}">
-<body onload="loadPage('${locale}', '${requestUser.login}')"></c:when>
-<c:otherwise>
-<body onload="loadPage('${locale}')"></c:otherwise>
-</c:choose>
+
+<body>
 <%@ include file="header.jsp" %>
 <div class="main-holder">
     <div class="empty-place"></div>

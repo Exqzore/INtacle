@@ -26,7 +26,8 @@
             <c:choose>
                 <c:when test="${user != null}">
                     <input type="text" onmousedown="cancelBubble = true;" ontouchstart="event.cancelBubble = true;"
-                           class="search-wrapper__input" autocomplete="off"
+                           class="search-wrapper__input" autocomplete="off" id="search-input"
+                           onkeypress="return search(event, '${pageContext.request.contextPath}')"
                            placeholder="<fmt:message key="header.search"/>">
                 </c:when>
                 <c:otherwise><span class="top-line__greeting"><fmt:message key="header.greeting"/></span></c:otherwise>
@@ -39,7 +40,7 @@
                 <c:when test="${user != null}">
                     <span class="profile-name profile-wrapper__checked">${user.login}</span>
                     <img class="profile-image profile-wrapper__checked" width="48" height="48"
-                         src="${pageContext.request.contextPath}/image/avatar/${user.avatarPath}" alt="User Login"/>
+                         src="${pageContext.request.contextPath}/image/avatar/${user.avatarImagePath}" alt="User avatar"/>
                 </c:when>
                 <c:otherwise>
                     <span class="profile-name profile-wrapper__checked"><fmt:message key="header.menu"/></span>
@@ -54,10 +55,12 @@
                     <li class="profile-arrow__menu-elem">
                         <fmt:message key="header.menu.languages"/>
                         <ul class="profile-arrow__languages-menu">
-                            <a class="profile-arrow__menu-elem" onclick="setLocaleRU('${pageContext.request.contextPath}')" href="#">
+                            <a class="profile-arrow__menu-elem"
+                               onclick="setLocaleRU('${pageContext.request.contextPath}')" href="#">
                                 <fmt:message key="header.menu.languages.russian"/>
                             </a>
-                            <a class="profile-arrow__menu-elem" onclick="setLocaleEN('${pageContext.request.contextPath}')" href="#">
+                            <a class="profile-arrow__menu-elem"
+                               onclick="setLocaleEN('${pageContext.request.contextPath}')" href="#">
                                 <fmt:message key="header.menu.languages.english"/>
                             </a>
                         </ul>
@@ -68,6 +71,14 @@
                                href="${pageContext.request.contextPath}/main?command=logout">
                                 <fmt:message key="header.menu.logout"/>
                             </a>
+                            <c:choose>
+                                <c:when test="${user.role.name().equals('ADMIN')}">
+                                    <a class="profile-arrow__menu-elem admin-panel"
+                                       href="${pageContext.request.contextPath}/main?command=logout">
+                                        <fmt:message key="header.menu.admin"/>
+                                    </a>
+                                </c:when>
+                            </c:choose>
                         </c:when>
                         <c:otherwise>
                             <a class="profile-arrow__menu-elem"

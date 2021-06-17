@@ -1,6 +1,8 @@
 package com.exqzore.intacle.model.entity;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private long id;
     private String login;
     private String name;
@@ -8,24 +10,24 @@ public class User {
     private String email;
     private String password;
     private String activationCode;
-    private String level;
-    private String avatarPath;
+    private UserRole role;
+    private String avatarImagePath;
     private int subscribersCount;
     private int subscriptionsCount;
 
     public User() {
     }
 
-    public User(long id, String login, String name, String surname, String email, String level, String activationCode,
-                String avatarPath, int subscribersCount, int subscriptionsCount) {
+    public User(long id, String login, String name, String surname, String email, UserRole role, String activationCode,
+                String avatarImagePath, int subscribersCount, int subscriptionsCount) {
         this.id = id;
         this.login = login;
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.level = level;
+        this.role = role;
         this.activationCode = activationCode;
-        this.avatarPath = avatarPath;
+        this.avatarImagePath = avatarImagePath;
         this.subscribersCount = subscribersCount;
         this.subscriptionsCount = subscriptionsCount;
     }
@@ -70,12 +72,12 @@ public class User {
         this.email = email;
     }
 
-    public String getAvatarPath() {
-        return avatarPath;
+    public String getAvatarImagePath() {
+        return avatarImagePath;
     }
 
-    public void setAvatarPath(String avatarPath) {
-        this.avatarPath = avatarPath;
+    public void setAvatarImagePath(String avatarImagePath) {
+        this.avatarImagePath = avatarImagePath;
     }
 
     public String getPassword() {
@@ -86,12 +88,12 @@ public class User {
         this.password = password;
     }
 
-    public String getLevel() {
-        return level;
+    public UserRole getRole() {
+        return role;
     }
 
-    public void setLevel(String level) {
-        this.level = level;
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     public String getActivationCode() {
@@ -143,8 +145,8 @@ public class User {
         sb.append(", name='").append(name).append('\'');
         sb.append(", surname='").append(surname).append('\'');
         sb.append(", email='").append(email).append('\'');
-        sb.append(", level='").append(level).append('\'');
-        sb.append(", avatarPath='").append(avatarPath).append('\'');
+        sb.append(", role='").append(role).append('\'');
+        sb.append(", avatarImagePath='").append(avatarImagePath).append('\'');
         sb.append(", subscribersCount=").append(subscribersCount);
         sb.append(", subscriptionsCount=").append(subscriptionsCount);
         sb.append('}');

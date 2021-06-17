@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertyReader {
-    private final static Logger logger = LogManager.getLogger(PropertyReader.class);
+    private final static Logger logger = LogManager.getLogger();
 
     private PropertyReader() {
     }

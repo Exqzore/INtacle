@@ -14,7 +14,7 @@ setInterval(async () => {
             let newElem = document.createElement('div')
             newElem.setAttribute('class', 'row row-left')
             newElem.innerHTML = `
-                <img class="message-image" src="image/avatar/` + json.messages[i].avatarPath + `" alt="User avatar"
+                <img class="message-image" src="image/avatar/` + json.messages[i].avatarImagePath + `" alt="User avatar"
                 width="44" height="44"/>
                 <div class="chat-bubble chat-bubble__left">
                     <div class="message-title">
@@ -23,8 +23,8 @@ setInterval(async () => {
                     </div>` + json.messages[i].content + `
                 </div>`
             chatPanel.append(newElem)
+            chatPanel.scrollTop = chatPanel.scrollHeight
         }
-        chatPanel.scrollTop = chatPanel.scrollHeight
     }
 }, 1500)
 
@@ -45,7 +45,7 @@ async function createMessage(form) {
                             <div class="message-author">` + json.login + `</div>
                         </div>` + json.content + `
                     </div>
-                    <img class="message-image" src="image/avatar/` + json.avatarPath + `" alt="User avatar" 
+                    <img class="message-image" src="image/avatar/` + json.avatarImagePath + `" alt="User avatar" 
                     width="44" height="44"/>`
             chatPanel.append(newElem)
             chatPanel.scrollTop = chatPanel.scrollHeight

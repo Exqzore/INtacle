@@ -15,12 +15,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/subscriptions-page_style.css">
     <script src="https://kit.fontawesome.com/f5dea48adc.js" crossorigin="anonymous"></script>
 </head>
-<c:choose>
-<c:when test="${requestUser != null}">
-<body onload="loadPage('${locale}', '${requestUser.login}')"></c:when>
-<c:otherwise>
-<body onload="loadPage('${locale}')"></c:otherwise>
-</c:choose>
+
+<body>
 <%@ include file="header.jsp" %>
 <div class="page-layout">
     <div class="empty__page-layout"></div>
@@ -38,14 +34,17 @@
                         <div class="user-elem__container">
                             <a href="${pageContext.request.contextPath}/main?command=show_profile&login=${subscriber.login}"
                                class="user-elem__page">
-                                <img class="user-elem__profile-image" src="image/avatar/${subscriber.avatarPath}"
-                                     alt="User avatar" width="70" height="70"/>
+                                <img class="user-elem__profile-image" alt="User avatar" width="70" height="70"
+                                     src="${pageContext.request.contextPath}/image/avatar/${subscriber.avatarImagePath}"/>
                                 <div class="user-elem__login">${subscriber.login}</div>
                             </a>
                             <div class="user-elem__chat-link">
                                 <c:choose>
                                     <c:when test="${!subscriber.login.equals(user.login)}">
-                                        <a href="#" class="chat-link"><fmt:message key="subscriptions.message"/></a>
+                                        <a href="${pageContext.request.contextPath}/main?command=create_chat&user_id=${subscriber.id}"
+                                           class="chat-link">
+                                            <fmt:message key="subscriptions.message"/>
+                                        </a>
                                     </c:when>
                                 </c:choose>
                             </div>

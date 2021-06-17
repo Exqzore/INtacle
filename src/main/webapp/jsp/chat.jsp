@@ -16,12 +16,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="https://kit.fontawesome.com/f5dea48adc.js" crossorigin="anonymous"></script>
 </head>
-<c:choose>
-<c:when test="${requestUser != null}">
-<body onload="loadPage('${locale}', '${requestUser.login}')"></c:when>
-<c:otherwise>
-<body onload="loadPage('${locale}')"></c:otherwise>
-</c:choose>
+
+<body>
 <%@ include file="header.jsp" %>
 <div class="page-layout">
     <div class="empty__page-layout"></div>
@@ -29,32 +25,32 @@
     <div class="right__page-layout">
         <div class="empty-top"></div>
         <div class="chat-container">
-            <div class="title-text">Chat</div>
+            <div class="title-text"><fmt:message key="chat.title"/></div>
             <div class="decoration-text__chat"></div>
             <div class="chat-panel">
                 <c:forEach items="${messages}" var="message">
                     <c:choose>
-                        <c:when test="${message.authorId == user.id}">
+                        <c:when test="${message.author.id == user.id}">
                             <div class="row row-right">
                                 <div class="chat-bubble chat-bubble__right">
                                     <div class="message-title title-right">
                                         <div class="message-date">${message.creationDate}</div>
-                                        <div class="message-author">${message.authorLogin}</div>
+                                        <div class="message-author">${message.author.login}</div>
                                     </div>
                                         ${message.content}
                                 </div>
-                                <img class="message-image" src="image/avatar/${message.authorImagePath}"
+                                <img class="message-image" src="image/avatar/${message.author.avatarImagePath}"
                                      alt="User avatar" width="44" height="44"/>
                             </div>
                         </c:when>
                         <c:otherwise>
                             <div class="row row-left">
-                                <img class="message-image" src="image/avatar/${message.authorImagePath}"
+                                <img class="message-image" src="image/avatar/${message.author.avatarImagePath}"
                                      alt="User avatar" width="44" height="44"/>
                                 <div class="chat-bubble chat-bubble__left">
                                     <div class="message-title">
-                                        <div class="message-author">${message.creationDate}</div>
-                                        <div class="message-date">${message.authorLogin}</div>
+                                        <div class="message-author">${message.author.login}</div>
+                                        <div class="message-date">${message.creationDate}</div>
                                     </div>
                                         ${message.content}
                                 </div>
@@ -66,7 +62,8 @@
             <div class="decoration-input__chat"></div>
             <form class="chat-box-tray" method="post" onsubmit="createMessage(this); return false">
                 <label for="message_input-${chat}"></label>
-                <input id="message_input-${chat}" type="text" class="message-input" placeholder="Type your message here..."/>
+                <input id="message_input-${chat}" type="text" class="message-input"
+                       placeholder="<fmt:message key="chat.message.input"/>"/>
                 <button type="submit"><i class="material-icons">send</i></button>
             </form>
         </div>

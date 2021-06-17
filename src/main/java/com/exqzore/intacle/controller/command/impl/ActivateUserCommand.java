@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class ActivateUserCommand implements Command {
@@ -22,8 +23,7 @@ public class ActivateUserCommand implements Command {
     private static final String IS_INVALID_ACTIVATE_PARAMS = "isInvalidActivateParams";
 
     @Override
-    public String execute(HttpServletRequest request) {
-        String resultPage;
+    public String execute(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
         String login = request.getParameter(LOGIN);
         String activationCode = request.getParameter(ACTIVATION_CODE);
@@ -37,7 +37,6 @@ public class ActivateUserCommand implements Command {
             logger.log(Level.ERROR, exception);
             session.setAttribute(IS_INVALID_ACTIVATE_PARAMS, true);
         }
-        resultPage = WebPagePath.ACTIVATION_PAGE;
-        return resultPage;
+        return WebPagePath.ACTIVATION_PAGE;
     }
 }

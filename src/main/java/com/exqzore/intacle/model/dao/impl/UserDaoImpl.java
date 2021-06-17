@@ -3,6 +3,7 @@ package com.exqzore.intacle.model.dao.impl;
 import com.exqzore.intacle.exception.DaoException;
 import com.exqzore.intacle.model.dao.UserDao;
 import com.exqzore.intacle.model.entity.User;
+import com.exqzore.intacle.model.entity.UserRole;
 import com.exqzore.intacle.model.pool.ConnectionPool;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class UserDaoImpl implements UserDao {
@@ -26,11 +29,11 @@ public class UserDaoImpl implements UserDao {
             VALUES (?,?,?,?,?,?,?,?)
             """;
     private final static String USER_BY_LOGIN_AND_PASSWORD = """
-            SELECT u.id, u.email, u.name, u.surname, u.avatar_image_path, u.user_level, u.activation_code,
+            SELECT u.id, u.login, u.email, u.name, u.surname, u.avatar_image_path, u.user_level, u.activation_code,
             COUNT(s.subscriber), (SELECT COUNT(s2.subscription) FROM subscriptions s2 WHERE s2.subscriber = u.id)
             FROM users u
             LEFT JOIN subscriptions s ON u.id = s.subscription
-            WHERE u.login = ? AND u.password = ?
+            WHERE u.login = ? AND u.password = ? GROUP BY u.login
             """;
     private final static String LOGIN_WITH_ACTIVATION_CODE_EXISTS = """
             SELECT COUNT(login) FROM users WHERE login = ? AND activation_code = ?
@@ -38,14 +41,23 @@ public class UserDaoImpl implements UserDao {
     private final static String USER_ACTIVATION = """
             UPDATE users SET activation_code = NULL WHERE login = ? AND activation_code = ?
             """;
+    private final static String USER_UPDATE = """
+            UPDATE users SET name = ?, surname = ? WHERE login = ?
+            """;
+    private final static String USER_IMAGE_PATH_UPDATE = """
+            UPDATE users SET avatar_image_path = ? WHERE id = ?
+            """;
     private final static String FIND_BY_LOGIN = """
-            SELECT u.id, u.email, u.name, u.surname, u.avatar_image_path, u.user_level, u.activation_code,
+            SELECT u.id, u.login, u.email, u.name, u.surname, u.avatar_image_path, u.user_level, u.activation_code,
             COUNT(s.subscriber), (SELECT COUNT(s2.subscription) FROM subscriptions s2 WHERE s2.subscriber = u.id)
             FROM users u
             LEFT JOIN subscriptions s ON u.id = s.subscription
-            WHERE u.login = ?
+            WHERE u.login = ? GROUP BY u.login
             """;
     private final static String LOGIN_EXISTS = "SELECT COUNT(login) FROM users WHERE login = ?";
+    private final static String FIND_BY_PATTERN = """   
+            SELECT id, login, avatar_image_path FROM users WHERE login LIKE ? ORDER BY login
+            """;
 
     private UserDaoImpl() {
     }
@@ -64,9 +76,9 @@ public class UserDaoImpl implements UserDao {
             statement.setString(3, user.getPassword());
             statement.setString(4, user.getName());
             statement.setString(5, user.getSurname());
-            statement.setString(6, user.getLevel());
+            statement.setString(6, user.getRole().name());
             statement.setString(7, user.getActivationCode());
-            statement.setString(8, user.getAvatarPath());
+            statement.setString(8, user.getAvatarImagePath());
             if (statement.executeUpdate() > 0) {
                 logger.log(Level.INFO, "New user '{}' is created", user);
                 result = true;
@@ -109,18 +121,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(1, login);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                User user = new User();
-                user.setId(resultSet.getLong(1));
-                user.setLogin(login);
-                user.setEmail(resultSet.getString(2));
-                user.setName(resultSet.getString(3));
-                user.setSurname(resultSet.getString(4));
-                user.setAvatarPath(resultSet.getString(5));
-                user.setLevel(resultSet.getString(6));
-                user.setActivationCode(resultSet.getString(7));
-                user.setSubscribersCount(resultSet.getInt(8));
-                user.setSubscriptionsCount(resultSet.getInt(9));
-                optionalUser = Optional.of(user);
+                optionalUser = Optional.of(userFromResultSet(resultSet));
                 logger.log(Level.INFO, "User with login '{}' found successfully", login);
             } else {
                 optionalUser = Optional.empty();
@@ -131,6 +132,48 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException(exception);
         }
         return optionalUser;
+    }
+
+    @Override
+    public List<User> findByPattern(String pattern) throws DaoException {
+        List<User> users = new ArrayList<>();
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_BY_PATTERN)) {
+            statement.setString(1, pattern);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getLong(1));
+                user.setLogin(resultSet.getString(2));
+                user.setAvatarImagePath(resultSet.getString(3));
+                users.add(user);
+            }
+        } catch (SQLException exception) {
+            logger.log(Level.ERROR, "Find users error", exception);
+            throw new DaoException(exception);
+        }
+        return users;
+    }
+
+    @Override
+    public boolean editImagePath(String imagePath, long userId) throws DaoException {
+        boolean result;
+        try (Connection connection = ConnectionPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(USER_IMAGE_PATH_UPDATE)) {
+            statement.setString(1, imagePath);
+            statement.setLong(2, userId);
+            if (statement.executeUpdate() > 0) {
+                logger.log(Level.INFO, "Image path is updated successfully");
+                result = true;
+            } else {
+                logger.log(Level.INFO, "Image path is is not updated");
+                result = false;
+            }
+        } catch (SQLException exception) {
+            logger.log(Level.ERROR, "User update error", exception);
+            throw new DaoException(exception);
+        }
+        return result;
     }
 
     @Override
@@ -159,7 +202,29 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> login(String login, String password) throws DaoException {
+    public boolean edit(String login, String name, String surname) throws DaoException {
+        boolean result;
+        try (Connection connection = ConnectionPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(USER_UPDATE)) {
+            statement.setString(1, name);
+            statement.setString(2, surname);
+            statement.setString(3, login);
+            if (statement.executeUpdate() > 0) {
+                logger.log(Level.INFO, "User '{}' is successfully updated", login);
+                result = true;
+            } else {
+                logger.log(Level.INFO, "User '{}' is not updated", login);
+                result = false;
+            }
+        } catch (SQLException exception) {
+            logger.log(Level.ERROR, "User update error", exception);
+            throw new DaoException(exception);
+        }
+        return result;
+    }
+
+    @Override
+    public Optional<User> findByLoginAndPassword(String login, String password) throws DaoException {
         Optional<User> optionalUser;
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement getUserStatement = connection.prepareStatement(USER_BY_LOGIN_AND_PASSWORD)) {
@@ -167,18 +232,7 @@ public class UserDaoImpl implements UserDao {
             getUserStatement.setString(2, password);
             ResultSet resultSet = getUserStatement.executeQuery();
             if (resultSet.next()) {
-                User user = new User();
-                user.setId(resultSet.getLong(1));
-                user.setLogin(login);
-                user.setEmail(resultSet.getString(2));
-                user.setName(resultSet.getString(3));
-                user.setSurname(resultSet.getString(4));
-                user.setAvatarPath(resultSet.getString(5));
-                user.setLevel(resultSet.getString(6));
-                user.setActivationCode(resultSet.getString(7));
-                user.setSubscribersCount(resultSet.getInt(8));
-                user.setSubscriptionsCount(resultSet.getInt(9));
-                optionalUser = Optional.of(user);
+                optionalUser = Optional.of(userFromResultSet(resultSet));
                 logger.log(Level.INFO, "User with login '{}' successfully authenticated", login);
             } else {
                 optionalUser = Optional.empty();
@@ -189,5 +243,20 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException(exception);
         }
         return optionalUser;
+    }
+
+    private User userFromResultSet(ResultSet resultSet) throws SQLException {
+        User user = new User();
+        user.setId(resultSet.getLong(1));
+        user.setLogin(resultSet.getString(2));
+        user.setEmail(resultSet.getString(3));
+        user.setName(resultSet.getString(4));
+        user.setSurname(resultSet.getString(5));
+        user.setAvatarImagePath(resultSet.getString(6));
+        user.setRole(UserRole.valueOf(resultSet.getString(7)));
+        user.setActivationCode(resultSet.getString(8));
+        user.setSubscribersCount(resultSet.getInt(9));
+        user.setSubscriptionsCount(resultSet.getInt(10));
+        return user;
     }
 }

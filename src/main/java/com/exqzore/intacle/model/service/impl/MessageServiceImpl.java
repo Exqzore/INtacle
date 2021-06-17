@@ -2,11 +2,12 @@ package com.exqzore.intacle.model.service.impl;
 
 import com.exqzore.intacle.exception.DaoException;
 import com.exqzore.intacle.exception.InvalidParamsException;
-import com.exqzore.intacle.exception.PasswordEncoderException;
 import com.exqzore.intacle.exception.ServiceException;
 import com.exqzore.intacle.model.dao.MessageDao;
 import com.exqzore.intacle.model.dao.impl.MessageDaoImpl;
+import com.exqzore.intacle.model.entity.Chat;
 import com.exqzore.intacle.model.entity.Message;
+import com.exqzore.intacle.model.entity.User;
 import com.exqzore.intacle.model.service.MessageService;
 import com.exqzore.intacle.model.validator.LoginValidator;
 import org.apache.logging.log4j.Level;
@@ -32,7 +33,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> allByChatId(long chatId) throws ServiceException {
+    public List<Message> findAllByChatId(long chatId) throws ServiceException {
         List<Message> messages;
         try {
             messages = messageDao.findByChatId(chatId);
@@ -44,10 +45,10 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> newSenderByChatId(long chatId, long senderId) throws ServiceException {
+    public List<Message> findNewSenderByChatId(long chatId, long senderId) throws ServiceException {
         List<Message> messages;
         try {
-            messages = messageDao.findNewSenderByChatId(chatId, senderId);
+            messages = messageDao.findNewNotSenderByChatId(chatId, senderId);
         } catch (DaoException exception) {
             logger.log(Level.ERROR, exception);
             throw new ServiceException(exception);
@@ -56,30 +57,33 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public boolean defineOld(long chatId, long senderId) throws ServiceException {
-        boolean result;
+    public void defineOld(long chatId, long senderId) throws ServiceException {
         try {
-            result = messageDao.defineOdl(chatId, senderId);
+            messageDao.defineOdl(chatId, senderId);
         } catch (DaoException exception) {
             logger.log(Level.ERROR, exception);
             throw new ServiceException(exception);
         }
-        return result;
     }
 
     @Override
-    public Optional<Message> create(long chatId, String content, long authorId, String authorLogin, String authorImagePath) throws ServiceException {
+    public Optional<Message> create(long chatId, String content, long authorId, String authorLogin,
+                                    String authorAvatarImagePath) throws ServiceException {
         Optional<Message> messageOptional;
         if (LoginValidator.checkLogin(authorLogin)) {
             try {
+                Chat chat = new Chat();
+                chat.setId(chatId);
+                User author = new User();
+                author.setId(authorId);
+                author.setLogin(authorLogin);
+                author.setAvatarImagePath(authorAvatarImagePath);
                 Message message = new Message();
-                message.setChatId(chatId);
+                message.setChat(chat);
+                message.setAuthor(author);
                 message.setContent(content);
-                message.setAuthorId(authorId);
                 message.setCreationDate(new Date());
                 message.setUpdateDate(message.getCreationDate());
-                message.setAuthorLogin(authorLogin);
-                message.setAuthorImagePath(authorImagePath);
                 if (messageDao.create(message)) {
                     messageOptional = Optional.of(message);
                 } else {

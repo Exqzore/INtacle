@@ -12,7 +12,7 @@ public interface SubscriberService {
 
     boolean unsubscribe(String subscriberLogin, String subscriptionLogin) throws ServiceException;
 
-    List<User> findUserSubscribers(String login, int count, int offset) throws ServiceException;
+    List<User> findUserSubscribers(String login) throws ServiceException;
 
-    List<User> findUserSubscriptions(String login, int count, int offset) throws ServiceException;
+    List<User> findUserSubscriptions(String login) throws ServiceException;
 }

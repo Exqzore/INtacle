@@ -73,11 +73,11 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public List<User> findUserSubscribers(String login, int count, int offset) throws ServiceException {
+    public List<User> findUserSubscribers(String login) throws ServiceException {
         List<User> users;
         if (LoginValidator.checkLogin(login)) {
             try {
-                users = subscriberDao.findSubscribers(login, count, offset);
+                users = subscriberDao.findUserSubscribers(login);
             } catch (DaoException exception) {
                 logger.log(Level.ERROR, exception);
                 throw new ServiceException(exception);
@@ -89,11 +89,11 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public List<User> findUserSubscriptions(String login, int count, int offset) throws ServiceException {
+    public List<User> findUserSubscriptions(String login) throws ServiceException {
         List<User> users;
         if (LoginValidator.checkLogin(login)) {
             try {
-                users = subscriberDao.findSubscriptions(login, count, offset);
+                users = subscriberDao.findUserSubscriptions(login);
             } catch (DaoException exception) {
                 logger.log(Level.ERROR, exception);
                 throw new ServiceException(exception);

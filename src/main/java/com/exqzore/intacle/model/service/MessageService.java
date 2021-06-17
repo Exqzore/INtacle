@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MessageService {
-    List<Message> allByChatId(long chatId) throws ServiceException;
+    List<Message> findAllByChatId(long chatId) throws ServiceException;
 
-    List<Message> newSenderByChatId(long chatId, long senderId) throws ServiceException;
+    List<Message> findNewSenderByChatId(long chatId, long senderId) throws ServiceException;
 
-    boolean defineOld(long chatId, long senderId) throws ServiceException;
+    void defineOld(long chatId, long senderId) throws ServiceException;
 
-    Optional<Message> create(long chatId, String content, long authorId, String authorLogin, String authorImagePath) throws ServiceException;
+    Optional<Message> create(long chatId, String content, long authorId, String authorLogin,
+                             String authorAvatarImagePath) throws ServiceException;
 }

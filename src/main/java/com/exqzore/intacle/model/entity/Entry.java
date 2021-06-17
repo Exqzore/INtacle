@@ -1,38 +1,35 @@
 package com.exqzore.intacle.model.entity;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-public class Entry {
+public class Entry implements Serializable {
     private long id;
     private String title;
+    private String summary;
     private String content;
     private String previewImagePath;
-    private List<Comment> comments;
+    private Date creationDate;
     private Date updateDate;
+    private User author;
     private int likesCount;
-    private String authorLogin;
-    private String authorAvatarPath;
-    private boolean liked;
+    private boolean isLiked;
 
     public Entry() {
     }
 
-    public Entry(long id) {
-        this.id = id;
-    }
-
-    public Entry(long id, String title, String content, String previewImagePath, List<Comment> comments, Date updateDate, int likesCount, String authorLogin, String authorAvatarPath, boolean liked) {
+    public Entry(long id, String title, String summary, String content, String previewImagePath, Date creationDate,
+                 Date updateDate, User author, int likesCount, boolean isLiked) {
         this.id = id;
         this.title = title;
+        this.summary = summary;
         this.content = content;
         this.previewImagePath = previewImagePath;
-        this.comments = comments;
+        this.creationDate = creationDate;
         this.updateDate = updateDate;
+        this.author = author;
         this.likesCount = likesCount;
-        this.authorLogin = authorLogin;
-        this.authorAvatarPath = authorAvatarPath;
-        this.liked = liked;
+        this.isLiked = isLiked;
     }
 
     public long getId() {
@@ -51,6 +48,14 @@ public class Entry {
         this.title = title;
     }
 
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
     public String getContent() {
         return content;
     }
@@ -67,12 +72,12 @@ public class Entry {
         this.previewImagePath = previewImagePath;
     }
 
-    public List<Comment> getComments() {
-        return comments;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     public Date getUpdateDate() {
@@ -83,6 +88,14 @@ public class Entry {
         this.updateDate = updateDate;
     }
 
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
     public int getLikesCount() {
         return likesCount;
     }
@@ -91,28 +104,12 @@ public class Entry {
         this.likesCount = likesCount;
     }
 
-    public String getAuthorLogin() {
-        return authorLogin;
-    }
-
-    public void setAuthorLogin(String authorLogin) {
-        this.authorLogin = authorLogin;
-    }
-
-    public String getAuthorAvatarPath() {
-        return authorAvatarPath;
-    }
-
-    public void setAuthorAvatarPath(String authorAvatarPath) {
-        this.authorAvatarPath = authorAvatarPath;
-    }
-
     public boolean isLiked() {
-        return liked;
+        return isLiked;
     }
 
     public void setLiked(boolean liked) {
-        this.liked = liked;
+        this.isLiked = liked;
     }
 
     @Override
@@ -137,14 +134,14 @@ public class Entry {
         final StringBuilder sb = new StringBuilder("Entry{");
         sb.append("id=").append(id);
         sb.append(", title='").append(title).append('\'');
+        sb.append(", summary='").append(summary).append('\'');
         sb.append(", content='").append(content).append('\'');
         sb.append(", previewImagePath='").append(previewImagePath).append('\'');
-        sb.append(", comments=").append(comments);
+        sb.append(", creationDate=").append(creationDate);
         sb.append(", updateDate=").append(updateDate);
+        sb.append(", author=").append(author);
         sb.append(", likesCount=").append(likesCount);
-        sb.append(", authorLogin='").append(authorLogin).append('\'');
-        sb.append(", authorAvatarPath='").append(authorAvatarPath).append('\'');
-        sb.append(", liked=").append(liked);
+        sb.append(", isLiked=").append(isLiked);
         sb.append('}');
         return sb.toString();
     }

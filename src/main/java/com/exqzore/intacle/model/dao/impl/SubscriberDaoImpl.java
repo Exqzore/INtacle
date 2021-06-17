@@ -26,12 +26,12 @@ public class SubscriberDaoImpl implements SubscriberDao {
             SELECT COUNT(subscriber) FROM subscriptions WHERE subscriber = ? AND subscription = ?
             """;
     private final static String USER_SUBSCRIBERS = """
-            SELECT u.login, u.avatar_image_path FROM users u LEFT JOIN subscriptions s ON u.id = s.subscriber
-            WHERE s.subscription = (SELECT u2.id FROM users u2 WHERE u2.login = ?) ORDER BY u.login LIMIT ? OFFSET ?
+            SELECT u.id, u.login, u.avatar_image_path FROM users u LEFT JOIN subscriptions s ON u.id = s.subscriber
+            WHERE s.subscription = (SELECT u2.id FROM users u2 WHERE u2.login = ?) ORDER BY u.login
             """;
     private final static String USER_SUBSCRIPTIONS = """
-            SELECT u.login, u.avatar_image_path FROM users u LEFT JOIN subscriptions s ON u.id = s.subscription
-            WHERE s.subscriber = (SELECT u2.id FROM users u2 WHERE u2.login = ?) ORDER BY u.login LIMIT ? OFFSET ?
+            SELECT u.id, u.login, u.avatar_image_path FROM users u LEFT JOIN subscriptions s ON u.id = s.subscription
+            WHERE s.subscriber = (SELECT u2.id FROM users u2 WHERE u2.login = ?) ORDER BY u.login
             """;
     private final static String SUBSCRIBE = """
             INSERT INTO subscriptions (subscription, subscriber)
@@ -114,19 +114,14 @@ public class SubscriberDaoImpl implements SubscriberDao {
     }
 
     @Override
-    public List<User> findSubscribers(String login, int count, int offset) throws DaoException {
+    public List<User> findUserSubscribers(String login) throws DaoException {
         List<User> subscribers = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(USER_SUBSCRIBERS)) {
             statement.setString(1, login);
-            statement.setInt(2, count);
-            statement.setInt(3, offset);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                User user = new User();
-                user.setLogin(resultSet.getString(1));
-                user.setAvatarPath(resultSet.getString(2));
-                subscribers.add(user);
+                subscribers.add(userFromResultSet(resultSet));
             }
         } catch (SQLException exception) {
             logger.log(Level.ERROR, "Find user subscribers error", exception);
@@ -136,24 +131,27 @@ public class SubscriberDaoImpl implements SubscriberDao {
     }
 
     @Override
-    public List<User> findSubscriptions(String login, int count, int offset) throws DaoException {
+    public List<User> findUserSubscriptions(String login) throws DaoException {
         List<User> subscriptions = new ArrayList<>();
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(USER_SUBSCRIPTIONS)) {
             statement.setString(1, login);
-            statement.setInt(2, count);
-            statement.setInt(3, offset);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                User user = new User();
-                user.setLogin(resultSet.getString(1));
-                user.setAvatarPath(resultSet.getString(2));
-                subscriptions.add(user);
+                subscriptions.add(userFromResultSet(resultSet));
             }
         } catch (SQLException exception) {
             logger.log(Level.ERROR, "Find user subscriptions error", exception);
             throw new DaoException(exception);
         }
         return subscriptions;
+    }
+
+    private User userFromResultSet(ResultSet resultSet) throws SQLException {
+        User user = new User();
+        user.setId(resultSet.getLong(1));
+        user.setLogin(resultSet.getString(2));
+        user.setAvatarImagePath(resultSet.getString(3));
+        return user;
     }
 }

@@ -4,6 +4,7 @@ import com.exqzore.intacle.exception.*;
 import com.exqzore.intacle.model.dao.UserDao;
 import com.exqzore.intacle.model.dao.impl.UserDaoImpl;
 import com.exqzore.intacle.model.entity.User;
+import com.exqzore.intacle.model.entity.UserRole;
 import com.exqzore.intacle.model.service.UserService;
 import com.exqzore.intacle.model.validator.LoginValidator;
 import com.exqzore.intacle.model.validator.Validator;
@@ -12,6 +13,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,8 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao = UserDaoImpl.getInstance();
 
-    private static final String DEFAULT_AVATAR_PATH = "default_avatar.png";
-    private static final String DEFAULT_USER_LEVEL = "user";
+    private static final String DEFAULT_AVATAR_IMAGE__PATH = "default_avatar.png";
 
     private UserServiceImpl() {
     }
@@ -33,8 +35,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> register(String login, String email, String password, String repeatPassword, String name, String surname)
-            throws ServiceException {
+    public Optional<User> register(String login, String email, String password, String repeatPassword, String name,
+                                   String surname) throws ServiceException {
         Optional<User> userOptional;
         boolean isLoginFree;
         try {
@@ -52,8 +54,8 @@ public class UserServiceImpl implements UserService {
                 user.setLogin(login);
                 user.setEmail(email);
                 user.setPassword(PasswordEncoder.encode(repeatPassword));
-                user.setAvatarPath(DEFAULT_AVATAR_PATH);
-                user.setLevel(DEFAULT_USER_LEVEL);
+                user.setAvatarImagePath(DEFAULT_AVATAR_IMAGE__PATH);
+                user.setRole(UserRole.USER);
                 user.setName(name.isEmpty() ? null : name);
                 user.setSurname(surname.isEmpty() ? null : surname);
                 user.setActivationCode(UUID.randomUUID().toString());
@@ -62,7 +64,7 @@ public class UserServiceImpl implements UserService {
                 } else {
                     userOptional = Optional.empty();
                 }
-            } catch (DaoException | PasswordEncoderException exception) {
+            } catch (DaoException | NoSuchAlgorithmException exception) {
                 logger.log(Level.ERROR, exception);
                 throw new ServiceException(exception);
             }
@@ -78,8 +80,8 @@ public class UserServiceImpl implements UserService {
         if (Validator.checkLogIn(login, password)) {
             try {
                 password = PasswordEncoder.encode(password);
-                userOptional = userDao.login(login, password);
-            } catch (DaoException | PasswordEncoderException exception) {
+                userOptional = userDao.findByLoginAndPassword(login, password);
+            } catch (DaoException | NoSuchAlgorithmException exception) {
                 logger.log(Level.ERROR, exception);
                 throw new ServiceException(exception);
             }
@@ -114,9 +116,51 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean edit(String login, String name, String surname) throws ServiceException {
+        boolean isEdited;
+        if (Validator.checkEdit(name, surname)) {
+            try {
+                isEdited = userDao.edit(login, name, surname);
+            } catch (DaoException exception) {
+                logger.log(Level.ERROR, exception);
+                throw new ServiceException(exception);
+            }
+        } else {
+            throw new InvalidParamsException();
+        }
+        return isEdited;
+    }
+
+    @Override
+    public List<User> findByPartOfLogin(String part) throws ServiceException {
+        List<User> users;
+        StringBuilder pattern = new StringBuilder("%");
+        pattern.append(part).append("%");
+        try {
+            users = userDao.findByPattern(pattern.toString());
+        } catch (DaoException exception) {
+            logger.log(Level.ERROR, exception);
+            throw new ServiceException(exception);
+        }
+        return users;
+    }
+
+    @Override
+    public boolean updateAvatarImagePath(String imagePath, long userId) throws ServiceException {
+        boolean isEdited;
+        try {
+            isEdited = userDao.editImagePath(imagePath, userId);
+        } catch (DaoException exception) {
+            logger.log(Level.ERROR, exception);
+            throw new ServiceException(exception);
+        }
+        return isEdited;
+    }
+
+    @Override
     public Optional<User> findByLogin(String login) throws ServiceException {
         Optional<User> userOptional;
-        if(LoginValidator.checkLogin(login)) {
+        if (LoginValidator.checkLogin(login)) {
             try {
                 userOptional = userDao.findByLogin(login);
                 if (userOptional.isPresent()) {

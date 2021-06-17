@@ -1,11 +1,13 @@
 let currentLocale
-let requestUserLogin
 
-function loadPage(locale, login) {
-    currentLocale = locale
-    if(login) {
-        requestUserLogin = login
-    }
+function setLocaleEN(path) {
+    currentLocale = 'en_EN'
+    document.location.replace(path + '/main?command=change_language&locale=en_EN')
+}
+
+function setLocaleRU(path) {
+    currentLocale = 'ru_RU'
+    document.location.replace(path + '/main?command=change_language&locale=ru_RU')
 }
 
 function displayProfileMenu() {
@@ -20,60 +22,14 @@ function displayProfileMenu() {
     }
 }
 
-function setLocaleEN(path) {
-    currentLocale = 'en_EN'
-    document.location.replace(path + '/main?command=change_language&locale=en_EN')
-}
+async function search(e, path) {
+    if (e.keyCode === 13) {
+        let partLogin = document.getElementById('search-input').value
+        document.location.replace(path + '/main?command=find_users&part=' + partLogin)
 
-function setLocaleRU(path) {
-    currentLocale = 'ru_RU'
-    document.location.replace(path + '/main?command=change_language&locale=ru_RU')
-}
-
-async function subscribe(elem) {
-    let url = 'rest?command=subscribe&login=' + requestUserLogin;
-    let response = await fetch(url);
-    let json = await response.json();
-    console.log(json.status)
-    if(json.status === 'SUCCESS') {
-        let newLink = document.createElement('a');
-        newLink.setAttribute('href', '#')
-        newLink.setAttribute('onclick', 'unsubscribe(this)')
-        newLink.setAttribute('class', 'profile__action-btn')
-        if(currentLocale === 'ru_RU') {
-            newLink.innerHTML = 'отписаться'
-        } else {
-            newLink.innerHTML = 'unsubscribe'
-        }
-        elem.after(newLink)
-        elem.remove()
-        let num = document.getElementById('subscribers-number')
-        let value = parseInt(num.innerHTML)
-        value++
-        num.innerHTML = value.toString()
-    }
-}
-
-async function unsubscribe(elem) {
-    let url = 'rest?command=unsubscribe&login=' + requestUserLogin;
-    let response = await fetch(url);
-    let json = await response.json();
-    console.log(json.status)
-    if(json.status === 'SUCCESS') {
-        let newLink = document.createElement('a');
-        newLink.setAttribute('href', '#')
-        newLink.setAttribute('onclick', 'subscribe(this)')
-        newLink.setAttribute('class', 'profile__action-btn')
-        if(currentLocale === 'ru_RU') {
-            newLink.innerHTML = 'подписаться'
-        } else {
-            newLink.innerHTML = 'subscribe'
-        }
-        elem.after(newLink)
-        elem.remove()
-        let num = document.getElementById('subscribers-number')
-        let value = parseInt(num.innerHTML)
-        value--
-        num.innerHTML = value.toString()
+        // console.log(partLogin)
+        // let url = 'main?command=find_users&part=' + partLogin;
+        // let response = await fetch(url);
+        // console.log(response)
     }
 }

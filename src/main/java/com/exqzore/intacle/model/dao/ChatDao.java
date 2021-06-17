@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChatDao {
-    boolean create(long firstUserId, long secondUserId) throws DaoException;
+    Optional<Chat> create(long firstUserId, long secondUserId) throws DaoException;
 
-    Optional<Chat> findByUsers(long firstUserId, long secondUserId) throws DaoException;
+    Optional<Chat> findByUsersId(long firstUserId, long secondUserId) throws DaoException;
 
-    List<Chat> findUserChat(long userId) throws DaoException;
+    List<Chat> findByUserId(long userId) throws DaoException;
 }

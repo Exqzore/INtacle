@@ -1,16 +1,15 @@
 package com.exqzore.intacle.model.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Message {
+public class Message implements Serializable {
     private long id;
-    private long chatId;
+    private Chat chat;
     private String content;
     private Date creationDate;
     private Date updateDate;
-    private long authorId;
-    private String authorLogin;
-    private String authorImagePath;
+    private User author;
 
     public Message() {
     }
@@ -19,15 +18,13 @@ public class Message {
         this.id = id;
     }
 
-    public Message(long id, long chatId, String content, Date creationDate, Date updateDate, long authorId, String authorLogin, String authorImagePath) {
+    public Message(long id, Chat chat, String content, Date creationDate, Date updateDate, User author) {
         this.id = id;
-        this.chatId = chatId;
+        this.chat = chat;
         this.content = content;
         this.creationDate = creationDate;
         this.updateDate = updateDate;
-        this.authorId = authorId;
-        this.authorLogin = authorLogin;
-        this.authorImagePath = authorImagePath;
+        this.author = author;
     }
 
     public long getId() {
@@ -38,12 +35,12 @@ public class Message {
         this.id = id;
     }
 
-    public long getChatId() {
-        return chatId;
+    public Chat getChat() {
+        return chat;
     }
 
-    public void setChatId(long chatId) {
-        this.chatId = chatId;
+    public void setChat(Chat chat) {
+        this.chat = chat;
     }
 
     public String getContent() {
@@ -70,28 +67,12 @@ public class Message {
         this.updateDate = updateDate;
     }
 
-    public long getAuthorId() {
-        return authorId;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(long authorId) {
-        this.authorId = authorId;
-    }
-
-    public String getAuthorLogin() {
-        return authorLogin;
-    }
-
-    public void setAuthorLogin(String authorLogin) {
-        this.authorLogin = authorLogin;
-    }
-
-    public String getAuthorImagePath() {
-        return authorImagePath;
-    }
-
-    public void setAuthorImagePath(String authorImagePath) {
-        this.authorImagePath = authorImagePath;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     @Override
@@ -115,13 +96,11 @@ public class Message {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Message{");
         sb.append("id=").append(id);
-        sb.append(", chatId=").append(chatId);
+        sb.append(", chat=").append(chat);
         sb.append(", content='").append(content).append('\'');
         sb.append(", creationDate=").append(creationDate);
         sb.append(", updateDate=").append(updateDate);
-        sb.append(", authorId=").append(authorId);
-        sb.append(", authorLogin='").append(authorLogin).append('\'');
-        sb.append(", authorImagePath='").append(authorImagePath).append('\'');
+        sb.append(", author=").append(author);
         sb.append('}');
         return sb.toString();
     }

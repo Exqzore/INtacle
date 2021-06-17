@@ -31,25 +31,19 @@ public class MainServlet extends HttpServlet {
     }
 
     private void process(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        logger.log(Level.INFO, "New GET (Url = {})", request.getRequestURL() + (request.getQueryString() != null ? "?" + request.getQueryString() : ""));
-
+        logger.log(Level.INFO, "MAIN (New request: Url = '{}')", request.getRequestURL() + (request.getQueryString() != null ? "?" + request.getQueryString() : ""));
         request.setCharacterEncoding(ENCODING);
-
         String commandId = request.getParameter(COMMAND);
-        logger.log(Level.INFO, "COMMAND is {}", commandId);
         Optional<Command> commandOptional = CommandProvider.defineCommand(commandId);
-        logger.log(Level.INFO, "COMMAND is {}", commandOptional);
-
         if (commandOptional.isEmpty()) {
-            logger.log(Level.ERROR, "wrong command ({})", commandId);
+            logger.log(Level.ERROR, "Wrong command: {}", commandId);
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//            request.getRequestDispatcher(WebPagePath.ERROR).forward(request, response);
+            request.getRequestDispatcher(WebPagePath.ERROR_PAGE).forward(request, response);
             return;
         }
-
         Command command = commandOptional.get();
         logger.log(Level.INFO, "Command: {}", command);
-        String page = command.execute(request);
+        String page = command.execute(request, response);
         HttpSession session = request.getSession();
         session.setAttribute(PREVIOUS_PAGE, page);
 
