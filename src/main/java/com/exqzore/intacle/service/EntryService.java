@@ -1,6 +1,7 @@
 package com.exqzore.intacle.service;
 
 import com.exqzore.intacle.entity.Entry;
+import com.exqzore.intacle.entity.User;
 import com.exqzore.intacle.exception.ServiceException;
 
 import java.util.List;
@@ -13,8 +14,8 @@ public interface EntryService {
 
     Optional<Entry> findById(long entryId, long userId) throws ServiceException;
 
-    Optional<Entry> create(String title, String summary, String content, String previewImagePath, long authorId,
-                           String authorLogin, String authorAvatarImagePath) throws ServiceException;
+    Optional<Entry> create(String title, String summary, String content, String previewImagePath, User author)
+            throws ServiceException;
 
     boolean edit(long entryId, String summary, String content, String previewImagePath) throws ServiceException;
 

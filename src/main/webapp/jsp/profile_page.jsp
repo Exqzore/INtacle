@@ -26,7 +26,8 @@
         <div class="profile__content">
             <div class="profile__all-info">
                 <div class="profile__main-image">
-                    <img id="main-image-profile" src="${pageContext.request.contextPath}/main?command=take_file&file_name=${requestedUser.avatarImagePath}"
+                    <img id="main-image-profile"
+                         src="${pageContext.request.contextPath}/main?command=take_file&file_name=${requestedUser.avatarImagePath}"
                          class="main-image" alt="avatar" width="200" height="200" onclick="appModalWindow()"/>
                 </div>
                 <form method="post" action="${pageContext.request.contextPath}/main?command=edit_profile"
@@ -68,7 +69,7 @@
                                 <fmt:message key="profile.surname"/>
                             </label>
                             <input id="profile__surname" class="profile__name" type="text" name="surname" readonly
-                                    pattern="[a-zA-Z][a-zA-Z0-9_]{2,20}" value="${requestedUser.surname}">
+                                   pattern="[a-zA-Z][a-zA-Z0-9_]{2,20}" value="${requestedUser.surname}">
                         </div>
                     </div>
                     <c:choose>
@@ -149,34 +150,41 @@
 
         <div class="profile__create-entry">
             <div class="profile__entries-title">
-                Add new entry
+                <fmt:message key="profile.entry.create.title"/>
             </div>
             <div class="accordion__entries">
-                <button type="button" class="accordion__button" onclick="activatePanel(this)">create a new entry</button>
+                <button type="button" class="accordion__button" onclick="activatePanel(this)">
+                    <fmt:message key="profile.entry.creation"/>
+                </button>
                 <div class="accordion__content">
-
                     <form method="post" action="${pageContext.request.contextPath}/upload" hidden
-                          enctype="multipart/form-data" class="load-form__preview" id="upload_form" accept="image/jpeg,image/png">
-                        <input type="file" name="uploadFile" id="file_select">
+                          enctype="multipart/form-data" class="load-form__preview" id="preview_image-form" >
+                        <input type="file" name="uploadImage" id="preview_image_select" accept="image/jpeg,image/png">
                     </form>
-
-                    <form class="entry__content-form">
+                    <form method="post" action="${pageContext.request.contextPath}/main" class="entry__content-form">
+                        <input name="command" value="create_entry" hidden>
                         <div class="entry__content-top">
                             <div class="entry__content-image">
-                                <img src="images/1.jpg" class="entry__preview-image-create" alt="avatar" />
+                                <img id="preview_image"
+                                     src="${pageContext.request.contextPath}/main?command=take_file&file_name=empty_image.png"
+                                     class="entry__preview-image-create" alt="preview" onclick="loadPreviewImage()"/>
+                                <input id="preview_image_path" name="imagePath" value="empty_image.png" hidden>
                             </div>
                             <div class="entry__subcontent-form">
-                                <input type="text" placeholder="title" class="title-input textarea-panel" maxlength="64" readonly
-                                       onfocus="this.removeAttribute('readonly')">
-                                <textarea id="summary-text" placeholder="summary" class="summary-textarea textarea-panel"
-                                          maxlength="256">
-										</textarea>
+                                <input type="text" placeholder="<fmt:message key="profile.entry.title"/>"
+                                       class="title-input textarea-panel" maxlength="64" readonly
+                                       onfocus="this.removeAttribute('readonly')" name="title">
+                                <textarea id="summary-text" placeholder="<fmt:message key="profile.entry.summary"/>"
+                                          class="summary-textarea textarea-panel" maxlength="256" name="summary">
+                                </textarea>
                             </div>
                         </div>
-                        <textarea id="content-text" placeholder="content" class="content-textarea textarea-panel"
-                                  maxlength="4096">
-								</textarea>
-                        <button type="submit" class="entry__action-btn">Create</button>
+                        <textarea id="content-text" placeholder="<fmt:message key="profile.entry.content"/>"
+                                  class="content-textarea textarea-panel" maxlength="4096" name="content">
+                        </textarea>
+                        <button type="submit" class="entry__action-btn">
+                            <fmt:message key="profile.entry.create.btn"/>
+                        </button>
                     </form>
 
                 </div>

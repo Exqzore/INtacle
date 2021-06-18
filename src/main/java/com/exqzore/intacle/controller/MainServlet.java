@@ -44,10 +44,10 @@ public class MainServlet extends HttpServlet {
         Command command = commandOptional.get();
         logger.log(Level.INFO, "Command: {}", command);
         String page = command.execute(request, response);
-        HttpSession session = request.getSession();
-        session.setAttribute(PREVIOUS_PAGE, page);
-
-        if (page == null || page.isEmpty()) {
+        if(page != null && !page.isEmpty()) {
+            HttpSession session = request.getSession();
+            session.setAttribute(PREVIOUS_PAGE, page);
+        } else {
             return;
         }
 

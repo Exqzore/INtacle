@@ -6,4 +6,5 @@ public class WebPageRequest {
     public final static String GO_REGISTRATION_PAGE = "main?command=to_registration_page";
     public final static String USER_ACTIVATION = "main?command=activate_user&login=%s&activation_code=%s";
     public final static String SHOW_PROFILE = "main?command=show_profile&login=%s";
+    public final static String SHOW_ENTRY = "main?command=show_entry&entry=%s";
 }

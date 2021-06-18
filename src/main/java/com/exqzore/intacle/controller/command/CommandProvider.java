@@ -25,6 +25,7 @@ public enum CommandProvider implements Command {
     SHOW_CHAT(new ShowChatCommand()),
     CREATE_CHAT(new CreateChatCommand()),
     CREATE_MESSAGE(new CreateMessageCommand()),
+    CREATE_ENTRY(new CreateEntryCommand()),
     FIND_NEW_MESSAGES(new FindNewMessages()),
     FIND_USERS(new FindUsersCommand()),
     LIKE_COMMENT(new LikeCommentCommand()),

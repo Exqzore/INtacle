@@ -13,7 +13,7 @@ public interface EntryDao {
 
     Optional<Entry> findById(long entryId, long userId) throws DaoException;
 
-    boolean create(Entry entry) throws DaoException;
+    Optional<Entry> create(Entry entry) throws DaoException;
 
     boolean update(Entry entry) throws DaoException;
 

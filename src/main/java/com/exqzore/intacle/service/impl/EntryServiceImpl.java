@@ -68,34 +68,25 @@ public class EntryServiceImpl implements EntryService {
     }
 
     @Override
-    public Optional<Entry> create(String title, String summary, String content, String previewImagePath, long authorId,
-                                  String authorLogin, String authorAvatarImagePath) throws ServiceException {
+    public Optional<Entry> create(String title, String summary, String content, String previewImagePath, User author) throws ServiceException {
         Optional<Entry> entryOptional;
-        if (LoginValidator.checkLogin(authorLogin)) {
-            try {
-                User author = new User();
-                author.setId(authorId);
-                author.setLogin(authorLogin);
-                author.setAvatarImagePath(authorAvatarImagePath);
-                Entry entry = new Entry();
-                entry.setAuthor(author);
-                entry.setTitle(title);
-                entry.setSummary(summary);
-                entry.setContent(content);
-                entry.setPreviewImagePath(previewImagePath);
-                entry.setCreationDate(new Date());
-                entry.setUpdateDate(entry.getCreationDate());
-                if (entryDao.create(entry)) {
-                    entryOptional = Optional.of(entry);
-                } else {
-                    entryOptional = Optional.empty();
-                }
-            } catch (DaoException exception) {
-                logger.log(Level.ERROR, exception);
-                throw new ServiceException(exception);
+        try {
+            Entry entry = new Entry();
+            entry.setAuthor(author);
+            entry.setTitle(title);
+            entry.setSummary(summary);
+            entry.setContent(content);
+            entry.setPreviewImagePath(previewImagePath);
+            entry.setCreationDate(new Date());
+            entry.setUpdateDate(entry.getCreationDate());
+            if (entryDao.create(entry)) {
+                entryOptional = Optional.of(entry);
+            } else {
+                entryOptional = Optional.empty();
             }
-        } else {
-            throw new InvalidParamsException();
+        } catch (DaoException exception) {
+            logger.log(Level.ERROR, exception);
+            throw new ServiceException(exception);
         }
         return entryOptional;
     }

@@ -5,6 +5,10 @@ function activatePanel(elem) {
     let accordionContent = elem.nextElementSibling
     elem.classList.toggle('accordion__button--active')
     accordionContent.style.display = elem.classList.contains('accordion__button--active') ? 'block' : 'none'
+    let textarea = document.getElementById('summary-text')
+    textarea.value = ''
+    textarea = document.getElementById('content-text')
+    textarea.value = ''
 }
 
 function changeProfile(elem) {
@@ -118,6 +122,28 @@ async function loadAvatarImage(url) {
                     })
                 }
             })
+        })
+    }
+}
+
+const uploadPreviewImageForm = document.getElementById('preview_image-form')
+const previewImageSelect = document.getElementById('preview_image_select')
+const previewImage = document.getElementById('preview_image')
+const inputPreviewImagePath = document.getElementById('preview_image_path')
+
+function loadPreviewImage() {
+    previewImageSelect.click()
+    previewImageSelect.onchange = e => {
+        fetch(uploadPreviewImageForm.action, {
+            method: uploadAvatarImageForm.method,
+             body: new FormData(uploadAvatarImageForm)
+        }).then(response => {
+            if (response.ok) {
+                response.text().then(path => {
+                    previewImage.src = 'main?command=take_file&file_name=' + path
+                    inputPreviewImagePath.value = path
+                })
+            }
         })
     }
 }

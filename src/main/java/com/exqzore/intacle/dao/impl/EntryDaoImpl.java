@@ -126,10 +126,10 @@ public class EntryDaoImpl implements EntryDao {
     }
 
     @Override
-    public boolean create(Entry entry) throws DaoException {
-        boolean result;
+    public Optional<Entry> create(Entry entry) throws DaoException {
+        Optional<Entry> entryOptional;
         try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(CREATE_ENTRY)) {
+             PreparedStatement statement = connection.prepareStatement(CREATE_ENTRY, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, entry.getTitle());
             statement.setLong(2, entry.getAuthor().getId());
             statement.setString(3, entry.getSummary());
@@ -138,17 +138,25 @@ public class EntryDaoImpl implements EntryDao {
             statement.setTimestamp(6, new Timestamp(entry.getCreationDate().getTime()));
             statement.setTimestamp(7, new Timestamp(entry.getUpdateDate().getTime()));
             if (statement.executeUpdate() > 0) {
-                logger.log(Level.INFO, "New entry '{}' is created", entry);
-                result = true;
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if(resultSet.next()) {
+                    Entry tmpEntry = new Entry();
+                    tmpEntry.setId(resultSet.getLong(1));
+                    entryOptional = Optional.of(tmpEntry);
+                    logger.log(Level.INFO, "New entry '{}' is created", entry);
+                } else {
+                    entryOptional = Optional.empty();
+                    logger.log(Level.INFO, "Entry '{}' is not created", entry);
+                }
             } else {
+                entryOptional = Optional.empty();
                 logger.log(Level.INFO, "Entry '{}' is not created", entry);
-                result = false;
             }
         } catch (SQLException exception) {
             logger.log(Level.ERROR, "Entry creation error", exception);
             throw new DaoException(exception);
         }
-        return result;
+        return entryOptional;
     }
 
     @Override
