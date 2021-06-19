@@ -75,7 +75,7 @@
                             <c:choose>
                                 <c:when test="${user.role.name().equals('ADMIN')}">
                                     <a class="profile-arrow__menu-elem admin-panel"
-                                       href="${pageContext.request.contextPath}/main?command=logout">
+                                       href="${pageContext.request.contextPath}/main?command=show_admin_panel">
                                         <fmt:message key="header.menu.admin"/>
                                     </a>
                                 </c:when>

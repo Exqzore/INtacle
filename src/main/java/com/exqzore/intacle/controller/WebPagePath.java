@@ -11,6 +11,9 @@ public class WebPagePath {
     public final static String SUBSCRIPTIONS_PAGE = "/jsp/subscriptions_page.jsp";
     public final static String MESSENGER = "/jsp/messenger.jsp";
     public final static String CHAT = "/jsp/chat.jsp";
+    public final static String ENTRY_PAGE = "/jsp/entry_page.jsp";
+    public final static String EDIT_ENTRY_PAGE = "/jsp/edit_entry_page.jsp";
     public final static String ALL_USERS_PAGE = "/jsp/all_users.jsp";
-    public final static String ENTRIES_PAGE = "/jsp/all_users.jsp";
+    public final static String NEWS_PAGE = "/jsp/news_page.jsp";
+    public final static String ADMIN_PANEL = "/jsp/admin_panel.jsp";
 }

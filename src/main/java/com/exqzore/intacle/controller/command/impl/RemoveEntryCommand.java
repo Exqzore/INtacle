@@ -4,7 +4,6 @@ import com.exqzore.intacle.controller.ErrorPageAttribute;
 import com.exqzore.intacle.controller.WebPagePath;
 import com.exqzore.intacle.controller.WebPageRequest;
 import com.exqzore.intacle.controller.command.Command;
-import com.exqzore.intacle.entity.Entry;
 import com.exqzore.intacle.entity.User;
 import com.exqzore.intacle.entity.UserRole;
 import com.exqzore.intacle.exception.ServiceException;
@@ -17,33 +16,23 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Optional;
 
-public class CreateEntryCommand implements Command {
+public class RemoveEntryCommand implements Command {
     private static final Logger logger = LogManager.getLogger();
 
     private final EntryService entryService = EntryServiceImpl.getInstance();
 
     private static final String USER = "user";
-    private static final String TITLE = "title";
-    private static final String SUMMARY = "summary";
-    private static final String CONTENT = "content";
-    private static final String PREVIEW_IMAGE_PATH = "imagePath";
+    private static final String ENTRY_ID = "entry";
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
         String resultPage;
         User user = (User) request.getSession().getAttribute(USER);
-        String title = request.getParameter(TITLE);
-        String summary = request.getParameter(SUMMARY);
-        String content = request.getParameter(CONTENT);
-        String previewImagePath = request.getParameter(PREVIEW_IMAGE_PATH);
-        Optional<Entry> entryOptional;
+        long entryId = Long.parseLong(request.getParameter(ENTRY_ID));
         try {
-            entryOptional = entryService.create(title, summary, content, previewImagePath, user);
-            if (entryOptional.isPresent()) {
-                Entry entry = entryOptional.get();
-                resultPage = String.format(WebPageRequest.SHOW_ENTRY, entry.getId());
+            if (entryService.removeById(entryId)) {
+                resultPage = String.format(WebPageRequest.SHOW_PROFILE, user.getLogin());
             } else {
                 response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
                 resultPage = WebPagePath.ERROR_PAGE;

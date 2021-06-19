@@ -6,17 +6,14 @@ import com.exqzore.intacle.entity.Comment;
 import com.exqzore.intacle.entity.Entry;
 import com.exqzore.intacle.entity.User;
 import com.exqzore.intacle.exception.DaoException;
-import com.exqzore.intacle.exception.InvalidParamsException;
 import com.exqzore.intacle.exception.ServiceException;
 import com.exqzore.intacle.service.CommentService;
-import com.exqzore.intacle.service.validator.LoginValidator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public class CommentServiceImpl implements CommentService {
     private final static Logger logger = LogManager.getLogger();
@@ -81,35 +78,22 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Optional<Comment> create(long entryId, String content, long authorId, String authorLogin,
-                                    String authorAvatarImagePath) throws ServiceException {
-        Optional<Comment> commentOptional;
-        if (LoginValidator.checkLogin(authorLogin)) {
-            try {
-                Entry entry = new Entry();
-                entry.setId(entryId);
-                User author = new User();
-                author.setId(authorId);
-                author.setLogin(authorLogin);
-                author.setAvatarImagePath(authorAvatarImagePath);
-                Comment comment = new Comment();
-                comment.setContent(content);
-                comment.setCreationDate(new Date());
-                comment.setUpdateDate(comment.getCreationDate());
-                comment.setEntry(entry);
-                comment.setAuthor(author);
-                if (commentDao.create(comment)) {
-                    commentOptional = Optional.of(comment);
-                } else {
-                    commentOptional = Optional.empty();
-                }
-            } catch (DaoException exception) {
-                logger.log(Level.ERROR, exception);
-                throw new ServiceException(exception);
-            }
-        } else {
-            throw new InvalidParamsException();
+    public boolean create(long entryId, String content, User author) throws ServiceException {
+        boolean result;
+        try {
+            Entry entry = new Entry();
+            entry.setId(entryId);
+            Comment comment = new Comment();
+            comment.setContent(content);
+            comment.setCreationDate(new Date());
+            comment.setUpdateDate(comment.getCreationDate());
+            comment.setEntry(entry);
+            comment.setAuthor(author);
+            result = commentDao.create(comment);
+        } catch (DaoException exception) {
+            logger.log(Level.ERROR, exception);
+            throw new ServiceException(exception);
         }
-        return commentOptional;
+        return result;
     }
 }

@@ -20,5 +20,9 @@ public interface UserService {
 
     List<User> findByPartOfLogin(String part) throws ServiceException;
 
+    List<User> findAllNotAdmins() throws ServiceException;
+
     boolean updateAvatarImagePath(String imagePath, long userId) throws ServiceException;
+
+    boolean changeRole(String userRole, long userId) throws ServiceException;
 }

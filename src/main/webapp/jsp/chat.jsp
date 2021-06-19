@@ -34,8 +34,13 @@
                             <div class="row row-right">
                                 <div class="chat-bubble chat-bubble__right">
                                     <div class="message-title title-right">
-                                        <div class="message-date">${message.creationDate}</div>
-                                        <div class="message-author">${message.author.login}</div>
+                                        <div class="message-date">
+                                            <fmt:formatDate value="${message.creationDate}" type="both"/>
+                                        </div>
+                                        <a href="${pageContext.request.contextPath}/main?command=show_profile&login=${message.author.login}"
+                                           class="message-author">
+                                                ${message.author.login}
+                                        </a>
                                     </div>
                                         ${message.content}
                                 </div>
@@ -51,8 +56,13 @@
                                      alt="User avatar" width="44" height="44"/>
                                 <div class="chat-bubble chat-bubble__left">
                                     <div class="message-title">
-                                        <div class="message-author">${message.author.login}</div>
-                                        <div class="message-date">${message.creationDate}</div>
+                                        <a class="message-author"
+                                           href="${pageContext.request.contextPath}/main?command=show_profile&login=${message.author.login}">
+                                                ${message.author.login}
+                                        </a>
+                                        <div class="message-date">
+                                            <fmt:formatDate value="${message.creationDate}" type="both"/>
+                                        </div>
                                     </div>
                                         ${message.content}
                                 </div>

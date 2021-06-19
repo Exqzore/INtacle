@@ -2,6 +2,7 @@ package com.exqzore.intacle.dao;
 
 import com.exqzore.intacle.exception.DaoException;
 import com.exqzore.intacle.entity.User;
+import com.exqzore.intacle.exception.ServiceException;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,5 +22,9 @@ public interface UserDao {
 
     List<User> findByPattern(String pattern) throws DaoException;
 
+    List<User> findAllNotAdmins() throws DaoException;
+
     boolean editImagePath(String imagePath, long userId) throws DaoException;
+
+    boolean changeRole(String userRole, long userId) throws DaoException;
 }

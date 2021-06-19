@@ -47,9 +47,12 @@ public class FileServiceImpl implements FileService {
     public void writeFile(FileItem fileItem, String fileName) throws ServiceException {
         try {
             String fullPath = PATH + File.separator + fileName;
+            logger.log(Level.INFO, "FULL PATH file {}", fullPath);
             if (Files.exists(Path.of(fullPath))) {
+                logger.log(Level.INFO, "YES 1");
                 Files.delete(Path.of(fullPath));
             }
+            logger.log(Level.INFO, "YES 2");
             fileItem.write(new File(fullPath));
             logger.log(Level.INFO, "New file {}", fullPath);
         } catch (Exception exception) {

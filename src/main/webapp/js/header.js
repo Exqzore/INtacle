@@ -26,10 +26,5 @@ async function search(e, path) {
     if (e.keyCode === 13) {
         let partLogin = document.getElementById('search-input').value
         document.location.replace(path + '/main?command=find_users&part=' + partLogin)
-
-        // console.log(partLogin)
-        // let url = 'main?command=find_users&part=' + partLogin;
-        // let response = await fetch(url);
-        // console.log(response)
     }
 }

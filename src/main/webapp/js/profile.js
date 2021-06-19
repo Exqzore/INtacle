@@ -135,8 +135,8 @@ function loadPreviewImage() {
     previewImageSelect.click()
     previewImageSelect.onchange = e => {
         fetch(uploadPreviewImageForm.action, {
-            method: uploadAvatarImageForm.method,
-             body: new FormData(uploadAvatarImageForm)
+            method: uploadPreviewImageForm.method,
+            body: new FormData(uploadPreviewImageForm)
         }).then(response => {
             if (response.ok) {
                 response.text().then(path => {
@@ -148,43 +148,48 @@ function loadPreviewImage() {
     }
 }
 
-// function loadAvatarImage() {
-//     avatarImageSelect.onchange = e => {
-//         fetch(uploadAvatarImageForm.action, {
-//             method: uploadAvatarImageForm.method,
-//             body: new FormData(uploadAvatarImageForm)
-//         }).then(result => {
-//             if (result.ok) {
-//                 let imagePath
-//                 result.text().then(path => imagePath = path)
-//                 console.log(imagePath)
-//             }
-//         })
-//     }
-// }
+function likeEntry(entryId) {
+    let currentOffset = window.pageYOffset
+    let url = 'rest?command=like_entry&entry=' + entryId
+    fetch(url).then(response => {
+        window.scrollTo(0, currentOffset)
+        if(response.ok) {
+            response.json().then(json => {
+                if(json.status === 'SUCCESS') {
+                    let elem = document.getElementById('like_entry-' + entryId)
+                    elem.classList.add('liked')
+                    elem.classList.add('fa-heart')
+                    elem.classList.remove('fa-heart-o')
+                    elem.parentElement.setAttribute('onclick', 'unlikeEntry("' + entryId + '")')
+                    elem = document.getElementById('count_likes-' + entryId)
+                    let num = parseInt(elem.innerHTML)
+                    num++
+                    elem.innerHTML = num.toString()
+                }
+            })
+        }
+    })
+}
 
-
-// const mainImage = document.getElementById('main_image')
-// const newsBody = document.getElementById('news_body')
-//
-// const uploadForm = document.getElementById('upload_form')
-// const fileSelect = document.getElementById('file_select')
-//
-// const fileNameSpecifier = 'file_name='
-//
-// const getImgPrefix = mainImage.getAttribute('src').substr(0, mainImage.getAttribute('src').lastIndexOf(fileNameSpecifier)) + fileNameSpecifier
-// console.log(getImgPrefix)
-//
-// function loadImage() {
-//     fileSelect.click()
-//     fileSelect.onchange = e => {
-//         fetch(uploadForm.action, {
-//             method: uploadForm.method,
-//             body: new FormData(uploadForm)
-//         }).then(res => {
-//             if (res.ok) {
-//                 res.text().then(text => image.src = text)
-//             }
-//         })
-//     }
-// }
+function unlikeEntry(entryId) {
+    let currentOffset = window.pageYOffset
+    let url = 'rest?command=unlike_entry&entry=' + entryId
+    fetch(url).then(response => {
+        window.scrollTo(0, currentOffset)
+        if(response.ok) {
+            response.json().then(json => {
+                if(json.status === 'SUCCESS') {
+                    let elem = document.getElementById('like_entry-' + entryId)
+                    elem.classList.add('fa-heart-o')
+                    elem.classList.remove('fa-heart')
+                    elem.classList.remove('liked')
+                    elem.parentElement.setAttribute('onclick', 'likeEntry("' + entryId + '")')
+                    elem = document.getElementById('count_likes-' + entryId)
+                    let num = parseInt(elem.innerHTML)
+                    num--
+                    elem.innerHTML = num.toString()
+                }
+            })
+        }
+    })
+}

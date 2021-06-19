@@ -15,11 +15,6 @@
 	color: rgb(56, 56, 56);
 }
 
-.if-is-empty-text {
-	text-align: center;
-	color: rgba(56, 56, 56, .6);
-}
-
 .decoration-text {
 	border-top: 1px solid rgba(0, 0, 0, .2);
 	margin: 6px 15px;

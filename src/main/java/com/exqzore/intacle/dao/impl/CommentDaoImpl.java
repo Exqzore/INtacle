@@ -30,13 +30,13 @@ public class CommentDaoImpl implements CommentDao {
             """;
     private final static String REMOVE_COMMENT = "DELETE FROM comments WHERE id = ?";
     private final static String FIND_COMMENTS_BY_ENTRY_ID = """
-            SELECT c.id, c.content, c.creation_date, c.update_date, c.entry, c.author, u.login, u,avatar_image_path,
+            SELECT c.id, c.content, c.creation_date, c.update_date, c.entry, c.author, u.login, u.avatar_image_path,
             COUNT(l.author),
             (SELECT IF(count(l.author) != 0, TRUE, FALSE) FROM likes l WHERE l.author = ? AND l.comment = c.id)
             FROM comments c
             JOIN users u ON c.author = u.id
             LEFT JOIN likes l ON c.id = l.comment
-            WHERE c.entry = ? GROUP BY c.id
+            WHERE c.entry = ? GROUP BY c.id ORDER BY c.creation_date DESC
             """;
     private final static String LIKE_COMMENT = "INSERT INTO likes (author, comment) VALUES (?,?)";
     private final static String UNLIKE_COMMENT = "DELETE FROM likes WHERE author = ? AND comment = ?";

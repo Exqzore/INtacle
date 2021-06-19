@@ -23,9 +23,11 @@ public enum CommandProvider implements Command {
     SHOW_SUBSCRIPTIONS(new ShowSubscriptionsCommand()),
     SHOW_MESSENGER(new ShowMessengerCommand()),
     SHOW_CHAT(new ShowChatCommand()),
+    SHOW_ENTRY(new ShowEntryCommand()),
     CREATE_CHAT(new CreateChatCommand()),
     CREATE_MESSAGE(new CreateMessageCommand()),
     CREATE_ENTRY(new CreateEntryCommand()),
+    CREATE_COMMENT(new CreateCommentCommand()),
     FIND_NEW_MESSAGES(new FindNewMessages()),
     FIND_USERS(new FindUsersCommand()),
     LIKE_COMMENT(new LikeCommentCommand()),
@@ -33,7 +35,14 @@ public enum CommandProvider implements Command {
     LIKE_ENTRY(new LikeEntryCommand()),
     UNLIKE_ENTRY(new UnlikeEntryCommand()),
     TAKE_FILE(new TakeFileCommand()),
-    CHANGE_AVATAR_IMAGE(new ChangeAvatarImageCommand());
+    CHANGE_AVATAR_IMAGE(new ChangeAvatarImageCommand()),
+    REMOVE_ENTRY(new RemoveEntryCommand()),
+    REMOVE_COMMENT(new RemoveCommentCommand()),
+    SHOW_NEWS(new ShowNewsCommand()),
+    GO_EDIT_ENTRY(new GoEditEntryCommand()),
+    EDIT_ENTRY(new EditEntryCommand()),
+    SHOW_ADMIN_PANEL(new ShowAdminPanelCommand()),
+    CHANGE_ROLE(new ChangeRoleCommand());
 
     Command command;
 

@@ -1,6 +1,7 @@
 package com.exqzore.intacle.controller.filter;
 
 import com.exqzore.intacle.controller.WebPagePath;
+import com.exqzore.intacle.controller.WebPageRequest;
 import com.exqzore.intacle.controller.command.Command;
 import com.exqzore.intacle.controller.command.CommandProvider;
 import com.exqzore.intacle.entity.User;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class SecurityFilter implements Filter {
     private static final Logger logger = LogManager.getLogger();
 
+    private static final String ENCODING = "UTF-8";
     private static final String COMMAND = "command";
     private static final String USER = "user";
 
@@ -27,6 +29,7 @@ public class SecurityFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
+        request.setCharacterEncoding(ENCODING);
         String commandId = request.getParameter(COMMAND);
         User user = (User) request.getSession().getAttribute(USER);
         UserRole role = user != null ? user.getRole() : UserRole.GUEST;
@@ -36,7 +39,6 @@ public class SecurityFilter implements Filter {
         } else {
             Command command = commandOptional.get();
             logger.log(Level.INFO, "Current role = '{}', Allowed access = '{}'", role, command.getAllowedAccessLevels());
-
             if (command.getAllowedAccessLevels().contains(role)) {
                 filterChain.doFilter(request, response);
             } else {

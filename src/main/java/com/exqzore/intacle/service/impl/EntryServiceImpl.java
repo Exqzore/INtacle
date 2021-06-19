@@ -3,12 +3,10 @@ package com.exqzore.intacle.service.impl;
 import com.exqzore.intacle.dao.EntryDao;
 import com.exqzore.intacle.entity.Entry;
 import com.exqzore.intacle.exception.DaoException;
-import com.exqzore.intacle.exception.InvalidParamsException;
 import com.exqzore.intacle.exception.ServiceException;
 import com.exqzore.intacle.dao.impl.EntryDaoImpl;
 import com.exqzore.intacle.entity.User;
 import com.exqzore.intacle.service.EntryService;
-import com.exqzore.intacle.service.validator.LoginValidator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,11 +16,13 @@ import java.util.List;
 import java.util.Optional;
 
 public class EntryServiceImpl implements EntryService {
-    private final static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static final EntryService instance = new EntryServiceImpl();
 
-    private final EntryDao entryDao = EntryDaoImpl.getInstance();
+    private static final EntryDao entryDao = EntryDaoImpl.getInstance();
+
+    private static final String DEFAULT_PREVIEW_IMAGE_PATH = "empty_image.png";
 
     private EntryServiceImpl() {
     }
@@ -68,7 +68,8 @@ public class EntryServiceImpl implements EntryService {
     }
 
     @Override
-    public Optional<Entry> create(String title, String summary, String content, String previewImagePath, User author) throws ServiceException {
+    public Optional<Entry> create(String title, String summary, String content, String previewImagePath, User author)
+            throws ServiceException {
         Optional<Entry> entryOptional;
         try {
             Entry entry = new Entry();
@@ -76,10 +77,16 @@ public class EntryServiceImpl implements EntryService {
             entry.setTitle(title);
             entry.setSummary(summary);
             entry.setContent(content);
-            entry.setPreviewImagePath(previewImagePath);
             entry.setCreationDate(new Date());
             entry.setUpdateDate(entry.getCreationDate());
-            if (entryDao.create(entry)) {
+            if (previewImagePath.equals(DEFAULT_PREVIEW_IMAGE_PATH)) {
+                entry.setPreviewImagePath(null);
+            } else {
+                entry.setPreviewImagePath(previewImagePath);
+            }
+            Optional<Entry> tmpEntryOptional = entryDao.create(entry);
+            if (tmpEntryOptional.isPresent()) {
+                entry.setId(tmpEntryOptional.get().getId());
                 entryOptional = Optional.of(entry);
             } else {
                 entryOptional = Optional.empty();
@@ -92,11 +99,12 @@ public class EntryServiceImpl implements EntryService {
     }
 
     @Override
-    public boolean edit(long entryId, String summary, String content, String previewImagePath) throws ServiceException {
+    public boolean edit(long entryId, String title, String summary, String content, String previewImagePath) throws ServiceException {
         boolean isEdited;
         try {
             Entry entry = new Entry();
             entry.setId(entryId);
+            entry.setTitle(title);
             entry.setSummary(summary);
             entry.setContent(content);
             entry.setPreviewImagePath(previewImagePath);

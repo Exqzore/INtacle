@@ -24,6 +24,7 @@ public class UserDaoImpl implements UserDao {
 
     private final static UserDao instance = new UserDaoImpl();
 
+    private static final String ADMIN = "ADMIN";
     private static final String USER_REGISTRATION = """
             INSERT INTO users (login, email, password, name, surname, user_level, activation_code, avatar_image_path)
             VALUES (?,?,?,?,?,?,?,?)
@@ -57,6 +58,12 @@ public class UserDaoImpl implements UserDao {
     private final static String LOGIN_EXISTS = "SELECT COUNT(login) FROM users WHERE login = ?";
     private final static String FIND_BY_PATTERN = """   
             SELECT id, login, avatar_image_path FROM users WHERE login LIKE ? ORDER BY login
+            """;
+    private final static String FIND_NOT_ADMINS = """   
+            SELECT id, login, user_level FROM users WHERE user_level != ?
+            """;
+    private final static String CHANGE_ROLE = """   
+            UPDATE users SET user_level = ? WHERE id = ?
             """;
 
     private UserDaoImpl() {
@@ -156,6 +163,27 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public List<User> findAllNotAdmins() throws DaoException {
+        List<User> users = new ArrayList<>();
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_NOT_ADMINS)) {
+            statement.setString(1, ADMIN);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getLong(1));
+                user.setLogin(resultSet.getString(2));
+                user.setRole(UserRole.valueOf(resultSet.getString(3)));
+                users.add(user);
+            }
+        } catch (SQLException exception) {
+            logger.log(Level.ERROR, "Find users error", exception);
+            throw new DaoException(exception);
+        }
+        return users;
+    }
+
+    @Override
     public boolean editImagePath(String imagePath, long userId) throws DaoException {
         boolean result;
         try (Connection connection = ConnectionPool.getInstance().getConnection();
@@ -166,7 +194,28 @@ public class UserDaoImpl implements UserDao {
                 logger.log(Level.INFO, "Image path is updated successfully");
                 result = true;
             } else {
-                logger.log(Level.INFO, "Image path is is not updated");
+                logger.log(Level.INFO, "Image path is not updated");
+                result = false;
+            }
+        } catch (SQLException exception) {
+            logger.log(Level.ERROR, "User update error", exception);
+            throw new DaoException(exception);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean changeRole(String userRole, long userId) throws DaoException {
+        boolean result;
+        try (Connection connection = ConnectionPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(CHANGE_ROLE)) {
+            statement.setString(1, userRole);
+            statement.setLong(2, userId);
+            if (statement.executeUpdate() > 0) {
+                logger.log(Level.INFO, "User role is changed successfully");
+                result = true;
+            } else {
+                logger.log(Level.INFO, "User role is not changed");
                 result = false;
             }
         } catch (SQLException exception) {

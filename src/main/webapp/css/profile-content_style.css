@@ -38,6 +38,7 @@
 	flex-direction: column;
 	margin-left: 10px;
 	padding-top: 5px;
+	margin-bottom: 10px;
 }
 
 .profile__login {
@@ -172,6 +173,7 @@
 	background-color:#fff;
 	border: 1px;
 	border-radius: 10px;
+	margin-top: 10px;
 }
 
 .profile__entries-title {
@@ -446,7 +448,7 @@
 /*///////////////////////////////////////////////////////////////////////////////////////////////////*/
 .profile__all-entries {
 	width: 840px;
-	margin-top: 20px;
+	margin-top: -12px;
 }
 
 .profile__entry {
@@ -459,11 +461,23 @@
 
 .profile__entry-author {
 	display: flex;
-	width: 100%;
+	width: 830px;
 	height: 36px;
 	border-bottom: 1px solid rgba(0, 0, 0, .1);
 	align-items: center;
 	padding-left: 10px;
+	position: relative;
+}
+
+.profile__entry-delete {
+	text-decoration: none;
+	color: rgba(56, 56, 56, .6);
+	position: absolute;
+	right: 10px;
+}
+
+.profile__entry-delete:hover {
+	cursor: pointer;
 }
 
 .entry__author-login {
@@ -498,6 +512,7 @@
 	font-weight: 600;
 	color: rgba(56, 56, 56, .8);
 	transition: all .2s;
+	text-decoration: none;
 }
 
 .entry__title:hover {

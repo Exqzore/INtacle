@@ -146,10 +146,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findAllNotAdmins() throws ServiceException {
+        List<User> users;
+        try {
+            users = userDao.findAllNotAdmins();
+        } catch (DaoException exception) {
+            logger.log(Level.ERROR, exception);
+            throw new ServiceException(exception);
+        }
+        return users;
+    }
+
+    @Override
     public boolean updateAvatarImagePath(String imagePath, long userId) throws ServiceException {
         boolean isEdited;
         try {
             isEdited = userDao.editImagePath(imagePath, userId);
+        } catch (DaoException exception) {
+            logger.log(Level.ERROR, exception);
+            throw new ServiceException(exception);
+        }
+        return isEdited;
+    }
+
+    @Override
+    public boolean changeRole(String userRole, long userId) throws ServiceException {
+        boolean isEdited;
+        try {
+            isEdited = userDao.changeRole(userRole, userId);
         } catch (DaoException exception) {
             logger.log(Level.ERROR, exception);
             throw new ServiceException(exception);

@@ -20,3 +20,15 @@ body {
 	flex: 1 0 0;
 	min-width: 10px;
 }
+
+.liked {
+	color: rgba(255, 74, 74, 0.9);
+}
+
+.if-is-empty-text {
+	text-align: center;
+	color: rgba(56, 56, 56, .6);
+	background: #fff;
+	border: 1px;
+	border-radius: 10px;
+}

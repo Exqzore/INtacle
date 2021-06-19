@@ -17,7 +17,7 @@ public interface EntryService {
     Optional<Entry> create(String title, String summary, String content, String previewImagePath, User author)
             throws ServiceException;
 
-    boolean edit(long entryId, String summary, String content, String previewImagePath) throws ServiceException;
+    boolean edit(long entryId, String title, String summary, String content, String previewImagePath) throws ServiceException;
 
     boolean removeById(long entryId) throws ServiceException;
 

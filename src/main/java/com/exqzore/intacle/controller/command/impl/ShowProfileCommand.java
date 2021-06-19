@@ -54,7 +54,7 @@ public class ShowProfileCommand implements Command {
                 } else {
                     session.setAttribute(IS_SUBSCRIBE, subscriberService.isSubscribe(user.getId(), requestUser.getId()));
                 }
-                if (user.getRole().equals(UserRole.ADMIN) || user.getRole().equals(UserRole.EDITOR) || canEdit) {
+                if (List.of(UserRole.EDITOR, UserRole.ADMIN).contains(user.getRole()) || canEdit) {
                     session.setAttribute(CAN_EDIT_ENTRIES, true);
                 } else {
                     session.setAttribute(CAN_EDIT_ENTRIES, false);

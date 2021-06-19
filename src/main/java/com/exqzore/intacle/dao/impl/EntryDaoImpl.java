@@ -26,7 +26,7 @@ public class EntryDaoImpl implements EntryDao {
             VALUES (?,?,?,?,?,?,?)
             """;
     private final static String UPDATE_ENTRY = """
-            UPDATE entries SET summary = ?, content = ?, preview_image_path = ?, update_date=? WHERE id = ?
+            UPDATE entries SET title = ?, summary = ?, content = ?, preview_image_path = ?, update_date=? WHERE id = ?
             """;
     private final static String REMOVE_ENTRY = "DELETE FROM entries WHERE id = ?";
     private final static String FIND_ENTRIES_BY_USER_LOGIN = """
@@ -45,7 +45,7 @@ public class EntryDaoImpl implements EntryDao {
             FROM entries e
             JOIN users u ON e.author = u.id
             LEFT JOIN likes l ON e.id = l.entry
-            WHERE u.id = (SELECT s.subscription FROM subscription s WHERE s.ubscriber = ?) 
+            WHERE u.id IN (SELECT s.subscription FROM subscriptions s WHERE s.subscriber = ?) 
             GROUP BY e.id ORDER BY e.update_date DESC
             """;
     private final static String FIND_ENTRY_BY_ID = """
@@ -140,9 +140,8 @@ public class EntryDaoImpl implements EntryDao {
             if (statement.executeUpdate() > 0) {
                 ResultSet resultSet = statement.getGeneratedKeys();
                 if(resultSet.next()) {
-                    Entry tmpEntry = new Entry();
-                    tmpEntry.setId(resultSet.getLong(1));
-                    entryOptional = Optional.of(tmpEntry);
+                    entry.setId(resultSet.getLong(1));
+                    entryOptional = Optional.of(entry);
                     logger.log(Level.INFO, "New entry '{}' is created", entry);
                 } else {
                     entryOptional = Optional.empty();
@@ -164,11 +163,12 @@ public class EntryDaoImpl implements EntryDao {
         boolean result;
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_ENTRY)) {
-            statement.setString(1, entry.getSummary());
-            statement.setString(2, entry.getContent());
-            statement.setString(3, entry.getPreviewImagePath());
-            statement.setTimestamp(4, new Timestamp(entry.getUpdateDate().getTime()));
-            statement.setLong(5, entry.getId());
+            statement.setString(1, entry.getTitle());
+            statement.setString(2, entry.getSummary());
+            statement.setString(3, entry.getContent());
+            statement.setString(4, entry.getPreviewImagePath());
+            statement.setTimestamp(5, new Timestamp(entry.getUpdateDate().getTime()));
+            statement.setLong(6, entry.getId());
             if (statement.executeUpdate() > 0) {
                 logger.log(Level.INFO, "Entry '{}' is successfully updated", entry);
                 result = true;

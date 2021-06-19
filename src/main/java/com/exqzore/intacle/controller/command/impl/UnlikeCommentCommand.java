@@ -49,6 +49,7 @@ public class UnlikeCommentCommand implements Command {
     public List<UserRole> getAllowedAccessLevels() {
         return List.of(UserRole.USER, UserRole.EDITOR, UserRole.ADMIN);
     }
+
     private String createJson(JsonStatus status) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(STATUS, status);

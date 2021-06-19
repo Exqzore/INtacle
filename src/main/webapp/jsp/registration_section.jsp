@@ -6,7 +6,7 @@
 
 <div class="register-section">
     <div class="login-section__text"><fmt:message key="registration.form.title"/></div>
-    <form action="${pageContext.request.contextPath}/main?command=register" method="post"
+    <form action="${pageContext.request.contextPath}/main" method="post"
           onsubmit="toRegister(this); return false">
         <c:choose>
             <c:when test="${isLoginBusy}">
@@ -19,6 +19,7 @@
                 <div class="error-description"><fmt:message key="registration.error.02"/></div>
             </c:when>
         </c:choose>
+        <input name="command" value="register" hidden>
         <div class="div-container">
             <div class="input-container">
                 <div class="input_holder">
