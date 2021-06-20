@@ -32,6 +32,7 @@ public class MainServlet extends HttpServlet {
 
     private void process(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         logger.log(Level.INFO, "MAIN (New request: Url = '{}')", request.getRequestURL() + (request.getQueryString() != null ? "?" + request.getQueryString() : ""));
+        System.out.println(request.getQueryString());
         request.setCharacterEncoding(ENCODING);
         String commandId = request.getParameter(COMMAND);
         Optional<Command> commandOptional = CommandProvider.defineCommand(commandId);
@@ -51,11 +52,11 @@ public class MainServlet extends HttpServlet {
             return;
         }
 
-        if (!page.contains(request.getContextPath())) {
+        if (!page.contains(WebPageRequest.REDIRECT)) {
             request.getRequestDispatcher(page).forward(request, response);
         } else {
             logger.log(Level.INFO, "Redirected to {}", page);
-            response.sendRedirect(page);
+            response.sendRedirect(page.substring(WebPageRequest.REDIRECT.length()));
         }
     }
 }

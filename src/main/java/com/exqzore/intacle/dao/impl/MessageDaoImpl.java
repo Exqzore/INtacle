@@ -54,7 +54,7 @@ public class MessageDaoImpl implements MessageDao {
     @Override
     public boolean create(Message message) throws DaoException {
         boolean result;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(CREATE_MESSAGE)) {
             statement.setLong(1, message.getAuthor().getId());
             statement.setLong(2, message.getChat().getId());
@@ -79,7 +79,7 @@ public class MessageDaoImpl implements MessageDao {
     @Override
     public boolean update(Message message) throws DaoException {
         boolean result;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_MESSAGE)) {
             statement.setString(1, message.getContent());
             statement.setTimestamp(2, new Timestamp(message.getUpdateDate().getTime()));
@@ -100,7 +100,7 @@ public class MessageDaoImpl implements MessageDao {
 
     @Override
     public void defineOdl(long chatId, long senderId) throws DaoException {
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(DEFINE_OLD_MESSAGES)) {
             statement.setLong(1, chatId);
             statement.setLong(2, senderId);

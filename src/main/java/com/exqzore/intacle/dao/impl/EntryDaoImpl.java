@@ -128,7 +128,7 @@ public class EntryDaoImpl implements EntryDao {
     @Override
     public Optional<Entry> create(Entry entry) throws DaoException {
         Optional<Entry> entryOptional;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(CREATE_ENTRY, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, entry.getTitle());
             statement.setLong(2, entry.getAuthor().getId());
@@ -161,7 +161,7 @@ public class EntryDaoImpl implements EntryDao {
     @Override
     public boolean update(Entry entry) throws DaoException {
         boolean result;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_ENTRY)) {
             statement.setString(1, entry.getTitle());
             statement.setString(2, entry.getSummary());

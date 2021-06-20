@@ -18,10 +18,13 @@
 <div class="main-holder">
     <div class="empty-place"></div>
     <div class="activation-description">
+        <h2>ERROR!</h2>
+        <h3>${pageContext.response.status}</h3>
         <c:choose>
-            <c:when test="${isMessageSentToMail}"><fmt:message key="activation.sentMail"/></c:when>
-            <c:when test="${isInvalidActivateParams}"><fmt:message key="activation.error"/></c:when>
-            <c:otherwise><fmt:message key="activation.success"/></c:otherwise>
+            <c:when test="${exception.getMessage() != null}">
+                ${exception.getMessage()}<br>
+                ${exception.getClass()}
+            </c:when>
         </c:choose>
     </div>
     <div class="empty-place"></div>

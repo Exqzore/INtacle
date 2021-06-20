@@ -43,7 +43,7 @@ public class LoginCommand implements Command {
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 session.setAttribute(USER, user);
-                resultPage = String.format(WebPageRequest.SHOW_PROFILE, user.getLogin());
+                resultPage = String.format(WebPageRequest.REDIRECT + WebPageRequest.SHOW_PROFILE, user.getLogin());
             } else {
                 session.setAttribute(IS_INVALID_PARAMS, true);
                 resultPage = WebPageRequest.GO_LOGIN_PAGE;

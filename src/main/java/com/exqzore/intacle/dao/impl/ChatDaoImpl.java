@@ -44,7 +44,7 @@ public class ChatDaoImpl implements ChatDao {
     @Override
     public Optional<Chat> create(long firstUserId, long secondUserId) throws DaoException {
         Optional<Chat> chatOptional;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement createStatement = connection.prepareStatement(CREATE_CHAT, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement addUserStatement = connection.prepareStatement(CHAT_ADD_USER)) {
             createStatement.executeUpdate();

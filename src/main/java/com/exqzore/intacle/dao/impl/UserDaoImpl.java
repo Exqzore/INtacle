@@ -76,7 +76,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean create(User user) throws DaoException {
         boolean result;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(USER_REGISTRATION)) {
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getEmail());
@@ -186,7 +186,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean editImagePath(String imagePath, long userId) throws DaoException {
         boolean result;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(USER_IMAGE_PATH_UPDATE)) {
             statement.setString(1, imagePath);
             statement.setLong(2, userId);
@@ -207,7 +207,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean changeRole(String userRole, long userId) throws DaoException {
         boolean result;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(CHANGE_ROLE)) {
             statement.setString(1, userRole);
             statement.setLong(2, userId);
@@ -228,7 +228,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean activate(String login, String activationCode) throws DaoException {
         boolean result;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement checkLoginStatement = connection.prepareStatement(LOGIN_WITH_ACTIVATION_CODE_EXISTS);
              PreparedStatement activateStatement = connection.prepareStatement(USER_ACTIVATION)) {
             checkLoginStatement.setString(1, login);
@@ -253,7 +253,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean edit(String login, String name, String surname) throws DaoException {
         boolean result;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(USER_UPDATE)) {
             statement.setString(1, name);
             statement.setString(2, surname);

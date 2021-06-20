@@ -51,7 +51,7 @@ public class CommentDaoImpl implements CommentDao {
     @Override
     public boolean create(Comment comment) throws DaoException {
         boolean result;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(CREATE_COMMENT)) {
             statement.setLong(1, comment.getAuthor().getId());
             statement.setString(2, comment.getContent());
@@ -75,7 +75,7 @@ public class CommentDaoImpl implements CommentDao {
     @Override
     public boolean update(Comment comment) throws DaoException {
         boolean result;
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_COMMENT)) {
             statement.setString(1, comment.getContent());
             statement.setTimestamp(2, new Timestamp(comment.getUpdateDate().getTime()));
