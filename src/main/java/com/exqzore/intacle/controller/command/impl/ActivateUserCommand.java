@@ -2,6 +2,7 @@ package com.exqzore.intacle.controller.command.impl;
 
 import com.exqzore.intacle.controller.WebPagePath;
 import com.exqzore.intacle.controller.command.Command;
+import com.exqzore.intacle.entity.UserRole;
 import com.exqzore.intacle.exception.ServiceException;
 import com.exqzore.intacle.service.UserService;
 import com.exqzore.intacle.service.impl.UserServiceImpl;
@@ -12,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 public class ActivateUserCommand implements Command {
     private static final Logger logger = LogManager.getLogger();
@@ -38,5 +40,10 @@ public class ActivateUserCommand implements Command {
             session.setAttribute(IS_INVALID_ACTIVATE_PARAMS, true);
         }
         return WebPagePath.ACTIVATION_PAGE;
+    }
+
+    @Override
+    public List<UserRole> getAllowedAccessLevels() {
+        return List.of(UserRole.values());
     }
 }

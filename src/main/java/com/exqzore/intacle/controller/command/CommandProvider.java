@@ -1,9 +1,11 @@
 package com.exqzore.intacle.controller.command;
 
 import com.exqzore.intacle.controller.command.impl.*;
+import com.exqzore.intacle.entity.UserRole;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -44,7 +46,7 @@ public enum CommandProvider implements Command {
     SHOW_ADMIN_PANEL(new ShowAdminPanelCommand()),
     CHANGE_ROLE(new ChangeRoleCommand());
 
-    Command command;
+    private final Command command;
 
     CommandProvider(Command command) {
         this.command = command;
@@ -67,5 +69,10 @@ public enum CommandProvider implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
         return command.execute(request, response);
+    }
+
+    @Override
+    public List<UserRole> getAllowedAccessLevels() {
+        return command.getAllowedAccessLevels();
     }
 }

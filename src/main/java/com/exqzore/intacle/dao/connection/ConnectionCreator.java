@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class ConnectionCreator {
-    private static final Logger logger = LogManager.getLogger(ConnectionCreator.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private final static String DATA_BASE_PROPERTY_PATH = "properties/database.properties";
     private final static String DATA_BASE_URL = "url";

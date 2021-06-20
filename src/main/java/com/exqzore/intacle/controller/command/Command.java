@@ -9,7 +9,5 @@ import java.util.List;
 public interface Command {
     String execute(HttpServletRequest request, HttpServletResponse response);
 
-    default List<UserRole> getAllowedAccessLevels() {
-        return List.of(UserRole.values());
-    }
+    List<UserRole> getAllowedAccessLevels();
 }

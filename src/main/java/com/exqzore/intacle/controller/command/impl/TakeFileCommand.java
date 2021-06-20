@@ -2,6 +2,7 @@ package com.exqzore.intacle.controller.command.impl;
 
 import com.exqzore.intacle.controller.WebPagePath;
 import com.exqzore.intacle.controller.command.Command;
+import com.exqzore.intacle.entity.UserRole;
 import com.exqzore.intacle.exception.ServiceException;
 import com.exqzore.intacle.service.FileService;
 import com.exqzore.intacle.service.impl.FileServiceImpl;
@@ -13,6 +14,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public class TakeFileCommand implements Command {
     private static final Logger logger = LogManager.getLogger();
@@ -34,5 +36,10 @@ public class TakeFileCommand implements Command {
             response.addHeader(CAUSE_HEADER, exception.getMessage());
         }
         return WebPagePath.EMPTY_PAGE;
+    }
+
+    @Override
+    public List<UserRole> getAllowedAccessLevels() {
+        return List.of(UserRole.USER, UserRole.EDITOR, UserRole.ADMIN);
     }
 }

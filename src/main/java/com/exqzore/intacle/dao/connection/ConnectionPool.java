@@ -14,7 +14,8 @@ public class ConnectionPool {
     private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
 
     private static final ConnectionPool INSTANCE = new ConnectionPool();
-    private final static int CONNECTION_POOL_SIZE = 10;
+
+    private final static int CONNECTION_POOL_SIZE = 16;
 
     private final BlockingQueue<ProxyConnection> freeConnections;
     private final BlockingQueue<ProxyConnection> busyConnections;

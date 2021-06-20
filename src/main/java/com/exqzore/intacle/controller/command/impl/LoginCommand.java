@@ -2,6 +2,7 @@ package com.exqzore.intacle.controller.command.impl;
 
 import com.exqzore.intacle.controller.WebPageRequest;
 import com.exqzore.intacle.controller.command.Command;
+import com.exqzore.intacle.entity.UserRole;
 import com.exqzore.intacle.exception.InvalidParamsException;
 import com.exqzore.intacle.exception.ServiceException;
 import com.exqzore.intacle.exception.UserNotActivatedException;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 
 public class LoginCommand implements Command {
@@ -62,5 +64,10 @@ public class LoginCommand implements Command {
             resultPage = WebPageRequest.GO_LOGIN_PAGE;
         }
         return resultPage;
+    }
+
+    @Override
+    public List<UserRole> getAllowedAccessLevels() {
+        return List.of(UserRole.values());
     }
 }
