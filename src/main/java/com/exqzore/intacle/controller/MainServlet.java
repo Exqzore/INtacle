@@ -32,7 +32,6 @@ public class MainServlet extends HttpServlet {
 
     private void process(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         logger.log(Level.INFO, "MAIN (New request: Url = '{}')", request.getRequestURL() + (request.getQueryString() != null ? "?" + request.getQueryString() : ""));
-        System.out.println(request.getQueryString());
         request.setCharacterEncoding(ENCODING);
         String commandId = request.getParameter(COMMAND);
         Optional<Command> commandOptional = CommandProvider.defineCommand(commandId);
