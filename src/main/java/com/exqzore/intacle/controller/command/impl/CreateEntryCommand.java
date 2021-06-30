@@ -43,7 +43,7 @@ public class CreateEntryCommand implements Command {
             entryOptional = entryService.create(title, summary, content, previewImagePath, user);
             if (entryOptional.isPresent()) {
                 Entry entry = entryOptional.get();
-                resultPage = String.format(WebPageRequest.SHOW_ENTRY, entry.getId());
+                resultPage = String.format(WebPageRequest.REDIRECT + WebPageRequest.SHOW_ENTRY, entry.getId());
             } else {
                 response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
                 resultPage = WebPagePath.ERROR_PAGE;

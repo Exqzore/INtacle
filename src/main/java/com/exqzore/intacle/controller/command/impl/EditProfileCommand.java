@@ -41,7 +41,7 @@ public class EditProfileCommand implements Command {
                 user.setName(name);
                 user.setSurname(surname);
                 session.setAttribute(USER, user);
-                resultPage = String.format(WebPageRequest.SHOW_PROFILE, user.getLogin());
+                resultPage = String.format(WebPageRequest.REDIRECT + WebPageRequest.SHOW_PROFILE, user.getLogin());
             } else {
                 response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
                 resultPage = WebPagePath.ERROR_PAGE;

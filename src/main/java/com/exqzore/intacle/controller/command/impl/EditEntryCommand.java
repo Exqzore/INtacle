@@ -37,7 +37,7 @@ public class EditEntryCommand implements Command {
         String previewImagePath = request.getParameter(PREVIEW_IMAGE_PATH);
         try {
             if (entryService.edit(entryId, title, summary, content, previewImagePath)) {
-                resultPage = String.format(WebPageRequest.SHOW_ENTRY, entryId);
+                resultPage = String.format(WebPageRequest.REDIRECT + WebPageRequest.SHOW_ENTRY, entryId);
             } else {
                 response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
                 resultPage = WebPagePath.ERROR_PAGE;

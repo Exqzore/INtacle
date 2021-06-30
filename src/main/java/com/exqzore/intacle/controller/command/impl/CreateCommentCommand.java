@@ -34,7 +34,7 @@ public class CreateCommentCommand implements Command {
         String content = request.getParameter(CONTENT);
         try {
             if (commentService.create(entryId, content, user)) {
-                resultPage = String.format(WebPageRequest.SHOW_ENTRY, entryId);
+                resultPage = String.format(WebPageRequest.REDIRECT + WebPageRequest.SHOW_ENTRY, entryId);
             } else {
                 response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
                 resultPage = WebPagePath.ERROR_PAGE;

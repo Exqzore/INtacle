@@ -58,7 +58,7 @@ public class RegisterCommand implements Command {
                 User user = userOptional.get();
                 mailService.sendMessage(user.getEmail(), mailService.prepareUrl(user.getLogin(), user.getActivationCode()));
                 session.setAttribute(IS_MESSAGE_SENT_TO_MAIL, true);
-                resultPage = WebPageRequest.USER_ACTIVATION;
+                resultPage = WebPageRequest.REDIRECT + WebPageRequest.USER_ACTIVATION;
             } else {
                 session.setAttribute(IS_USER_CREATION_ERROR, true);
                 resultPage = WebPageRequest.GO_REGISTRATION_PAGE;

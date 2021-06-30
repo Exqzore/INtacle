@@ -295,3 +295,7 @@
     width: 30px;
     color: rgba(0, 0, 0, .4);
 }
+
+.profile__all-entries {
+    width: 840px;
+}
