@@ -1,7 +1,6 @@
 package com.exqzore.intacle.controller.filter;
 
 import com.exqzore.intacle.controller.WebPagePath;
-import com.exqzore.intacle.controller.WebPageRequest;
 import com.exqzore.intacle.controller.command.Command;
 import com.exqzore.intacle.controller.command.CommandProvider;
 import com.exqzore.intacle.entity.User;

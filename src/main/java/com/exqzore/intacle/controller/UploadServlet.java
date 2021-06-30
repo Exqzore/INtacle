@@ -34,17 +34,12 @@ public class UploadServlet extends HttpServlet {
 
         try (PrintWriter responseWriter = response.getWriter()) {
             List<FileItem> fileItems = servletFileUpload.parseRequest(request);
-            logger.log(Level.INFO, "1");
             if (fileItems.size() != 1 || fileItems.get(0).isFormField()) {
-                logger.log(Level.INFO, "2");
                 response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
                 return;
             }
-            logger.log(Level.INFO, "3");
             FileItem fileItem = fileItems.get(0);
-            logger.log(Level.INFO, fileItem);
             String filePath = FileNameGenerator.generate(FileNameGenerator.getExtension(fileItem.getName()));
-            logger.log(Level.INFO, filePath);
             fileService.writeFile(fileItem, filePath);
             responseWriter.write(filePath.replace('\\', '/'));
         } catch (FileUploadException | ServiceException exception) {
